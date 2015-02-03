@@ -2,6 +2,7 @@ package com.izerui.redis.configuration;
 
 import flex.messaging.HttpFlexSession;
 import flex.messaging.MessageBroker;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.embedded.ServletListenerRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ import java.util.Map;
  * Created by serv on 2015/1/24.
  */
 @Configuration
+@ConditionalOnWebApplication
 public class FlexConfiguration {
 
     @Bean
