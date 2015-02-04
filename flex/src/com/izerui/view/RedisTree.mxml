@@ -5,18 +5,25 @@
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx">
 
+    <s:layout>
+        <s:VerticalLayout/>
+    </s:layout>
+
+    <mx:MenuBar labelField="@label" dataProvider="{menuList}" itemClick="menuBar1_itemClickHandler(event)" width="100%"/>
+
     <mx:Tree width="100%" height="100%" creationComplete="tree1_creationCompleteHandler(event)">
 
     </mx:Tree>
 
     <fx:Script><![CDATA[
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
-        import com.izerui.module.tree.event.GetServerConfigsEvent;
+        import com.izerui.event.GetServerConfigsEvent;
 
         import mx.collections.ArrayCollection;
         import mx.controls.Alert;
 
         import mx.events.FlexEvent;
+        import mx.events.MenuEvent;
 
         private function tree1_creationCompleteHandler(event:FlexEvent):void {
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(treeResponse))
@@ -25,6 +32,24 @@
         private function treeResponse(data:ArrayCollection):void {
             Alert.show(data.toString());
         }
+
+        private function menuBar1_itemClickHandler(event:MenuEvent):void {
+            Alert.show(event.label);
+        }
         ]]>
     </fx:Script>
+
+    <fx:Declarations>
+
+
+        <fx:XMLList id="menuList">
+            <menuItem label="sdf">
+                <menuItem label="桑德菲杰"/>
+                <menuItem label="桑德菲f杰"/>
+                <menuItem label="桑德菲s杰"/>
+                <menuItem label="桑德菲e杰"/>
+            </menuItem>
+        </fx:XMLList>
+
+    </fx:Declarations>
 </s:Panel>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
-               xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:tree="com.izerui.module.tree.*">
+               xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:view="com.izerui.view.*">
 
 
     <fx:Declarations>
@@ -9,15 +9,15 @@
     </fx:Declarations>
 
     <s:layout>
-        <s:VerticalLayout/>
+        <s:VerticalLayout paddingLeft="6" paddingBottom="6" paddingRight="6"/>
     </s:layout>
 
     <s:Group width="100%" height="80">
-        <mx:Label text="都是减肥"/>
+        <mx:Image source="@Embed(source='images/redis-logo-small.png')"></mx:Image>
     </s:Group>
 
     <mx:HDividedBox width="100%" height="100%">
-        <tree:RedisTree width="200" height="100%"/>
+        <view:RedisTree width="200" height="100%"/>
 
         <mx:VDividedBox width="100%" height="100%">
             <s:Panel height="60%" width="100%"></s:Panel>

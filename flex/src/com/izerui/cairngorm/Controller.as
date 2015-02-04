@@ -1,7 +1,7 @@
 package com.izerui.cairngorm
 {
 import com.adobe.cairngorm.control.FrontController;
-import com.izerui.module.tree.commond.GetServerConfigsCommond;
+import com.izerui.commond.GetServerConfigsCommond;
 
 public class Controller extends FrontController
 	{

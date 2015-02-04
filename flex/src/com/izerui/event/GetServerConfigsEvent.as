@@ -1,4 +1,4 @@
-package com.izerui.module.tree.event
+package com.izerui.event
 {
 	import com.adobe.cairngorm.control.CairngormEvent;
 	import com.izerui.cairngorm.Controller;

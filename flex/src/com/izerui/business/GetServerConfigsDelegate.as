@@ -1,4 +1,4 @@
-package com.izerui.module.tree.business
+package com.izerui.business
 {
 	import com.adobe.cairngorm.business.ServiceLocator;
 	import mx.rpc.AsyncToken;

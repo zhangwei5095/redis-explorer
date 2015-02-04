@@ -1,9 +1,9 @@
-package com.izerui.module.tree.commond
+package com.izerui.commond
 {
 	import com.adobe.cairngorm.commands.ICommand;
 	import com.adobe.cairngorm.control.CairngormEvent;
-	import com.izerui.module.tree.business.GetServerConfigsDelegate;
-	import com.izerui.module.tree.event.GetServerConfigsEvent;
+	import com.izerui.business.GetServerConfigsDelegate;
+	import com.izerui.event.GetServerConfigsEvent;
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
