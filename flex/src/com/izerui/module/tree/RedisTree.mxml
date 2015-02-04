@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+  Created by Administrator on 2015/2/4.
+-->
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx">
+
+    <mx:Tree width="100%" height="100%" creationComplete="tree1_creationCompleteHandler(event)">
+
+    </mx:Tree>
+
+    <fx:Script><![CDATA[
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.module.tree.event.GetServerConfigsEvent;
+
+        import mx.collections.ArrayCollection;
+        import mx.controls.Alert;
+
+        import mx.events.FlexEvent;
+
+        private function tree1_creationCompleteHandler(event:FlexEvent):void {
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(treeResponse))
+        }
+
+        private function treeResponse(data:ArrayCollection):void {
+            Alert.show(data.toString());
+        }
+        ]]>
+    </fx:Script>
+</s:Panel>

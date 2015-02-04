@@ -6,7 +6,7 @@
     <packaging>war</packaging>
     <groupId>com.izerui</groupId>
     <artifactId>redis-explorer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <organization>
         <name>Serv Software, Inc.</name>

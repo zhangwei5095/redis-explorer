@@ -9,7 +9,7 @@ import java.util.UUID;
  * Created by serv on 2015/2/3.
  */
 @Entity
-public class RedisConfig implements Serializable{
+public class ServerConfig implements Serializable{
 
     @Id
     private String id = UUID.randomUUID().toString();

@@ -1,6 +1,6 @@
 import com.izerui.redis.Application;
-import com.izerui.redis.entity.RedisConfig;
-import com.izerui.redis.repository.RedisConfigRepository;
+import com.izerui.redis.entity.ServerConfig;
+import com.izerui.redis.repository.ServerConfigRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ import java.util.List;
 public class JpaTest {
 
     @Autowired
-    RedisConfigRepository redisConfigRepository;
+    ServerConfigRepository serverConfigRepository;
 
     @Test
     public void findAll(){
-        List<RedisConfig> all = redisConfigRepository.findAll();
+        List<ServerConfig> all = serverConfigRepository.findAll();
         Assert.notNull(all);
     }
 
