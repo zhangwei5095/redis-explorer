@@ -1,7 +1,6 @@
 package com.izerui.event
 {
 	import com.adobe.cairngorm.control.CairngormEvent;
-	import com.izerui.cairngorm.Controller;
 	
 	public class GetServerConfigsEvent extends CairngormEvent
 	{
@@ -10,7 +9,7 @@ package com.izerui.event
 		
 		public function GetServerConfigsEvent(responseFun:Function)
 		{
-			super(Controller.getServerConfigs);
+			super("getServerConfigs");
 			
 			this.responseFun = responseFun;
 		}

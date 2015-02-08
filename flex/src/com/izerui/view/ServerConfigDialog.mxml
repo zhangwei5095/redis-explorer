@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			    close="titlewindow1_closeHandler(event)"
+			   title.add="添加服务器"
+			   title.edit="修改服务器"
+			   width="380" height="314">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Metadata>
+		[Event(name="redisServerUpdateEvent",type="com.izerui.support.event.RedisServerUpdateEvent")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.izerui.event.SaveServerConfigEvent;
+			import com.izerui.support.PopUtils;
+			import com.izerui.support.event.RedisServerUpdateEvent;
+			import com.izerui.vo.RedisServerConfig;
+			
+			import mx.controls.Alert;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			
+			private var _item:RedisServerConfig = new RedisServerConfig;
+			
+			[Bindable]
+			public function get item():RedisServerConfig
+			{
+				return _item;
+			}
+
+			public function set item(value:RedisServerConfig):void
+			{
+				_item = value;
+			}
+
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				PopUtils.removeUp(this);
+			}
+			
+			
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+					CairngormEventDispatcher.getInstance().dispatchEvent(new SaveServerConfigEvent(item,function(data:RedisServerConfig):void{
+						dispatchEvent(new RedisServerUpdateEvent(data));
+						PopUtils.removeUp(IFlexDisplayObject(document));
+					}));
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="add"/>
+		<s:State name="edit"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:controlBarContent>
+		<s:HGroup horizontalAlign="right" width="100%">
+			<s:Button label="确认" click="button1_clickHandler(event)">
+				
+			</s:Button>
+			<s:Button label="取消" click="PopUtils.removeUp(this);">
+				
+			</s:Button>
+			
+		</s:HGroup>
+	</s:controlBarContent>
+	
+	<s:Form width="100%" height="100%">
+		<s:FormItem label="名称:">
+			<mx:TextInput id="hostName" width="236" text="@{item.hostName}"/>
+		</s:FormItem>
+		<s:FormItem
+					label="主机:">
+			<mx:TextInput id="host" width="236" text="@{item.host}"/>
+		</s:FormItem>
+		<s:FormItem
+					label="端口:">
+			<mx:NumericStepper id="port" maximum="65535" minimum="1001" value="@{item.port}"/>
+		</s:FormItem>
+		<s:FormItem 
+					label="密码:">
+			<mx:TextInput id="password" width="236" text="@{item.password}"/>
+		</s:FormItem>
+	</s:Form>
+	
+</s:TitleWindow>

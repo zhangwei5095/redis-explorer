@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Created by Administrator on 2015/2/4.
 -->
@@ -9,32 +9,87 @@
         <s:VerticalLayout/>
     </s:layout>
 
-    <mx:MenuBar labelField="@label" dataProvider="{menuList}" itemClick="menuBar1_itemClickHandler(event)" width="100%"/>
+    <mx:MenuBar labelField="label" dataProvider="{menuList}" itemClick="menuBar1_itemClickHandler(event)" width="100%"/>
 
-    <mx:Tree width="100%" height="100%" creationComplete="tree1_creationCompleteHandler(event)">
+    <mx:Tree id="tree" width="100%" height="100%" labelField="hostName"
+             creationComplete="tree1_creationCompleteHandler(event)">
 
     </mx:Tree>
 
     <fx:Script><![CDATA[
-        import com.adobe.cairngorm.control.CairngormEventDispatcher;
-        import com.izerui.event.GetServerConfigsEvent;
-
-        import mx.collections.ArrayCollection;
-        import mx.controls.Alert;
-
+		import com.adobe.cairngorm.control.CairngormEventDispatcher;
+		import com.izerui.event.GetServerConfigsEvent;
+		import com.izerui.event.RemoveServerConfigEvent;
+        import com.izerui.support.AlertUtils;
+        import com.izerui.support.PopUtils;
+		import com.izerui.support.event.RedisServerUpdateEvent;
+        import com.izerui.vo.RedisServerConfig;
+        import com.izerui.vo.RedisServerConfig;
+		
+		import mx.collections.ArrayCollection;
+        import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
-        import mx.events.MenuEvent;
+		import mx.events.MenuEvent;
+		import mx.utils.ObjectUtil;
 
-        private function tree1_creationCompleteHandler(event:FlexEvent):void {
-            CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(treeResponse))
+
+        private function loadTreeData():void {
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(function (data:ArrayCollection):void {
+                tree.dataProvider = data;
+            }));
         }
 
-        private function treeResponse(data:ArrayCollection):void {
-            Alert.show(data.toString());
+        private function tree1_creationCompleteHandler(event:FlexEvent):void {
+            loadTreeData();
         }
 
         private function menuBar1_itemClickHandler(event:MenuEvent):void {
-            Alert.show(event.label);
+            switch (event.item.action) {
+                case "add":
+                {
+                    var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
+                    serverConfigDialog.currentState = "add";
+                    serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, redisServerUpdateListener);
+                    PopUtils.popUp(serverConfigDialog);
+                    break;
+                }
+                case "edit":
+                {
+                    if (tree.selectedIndex == -1) {
+                        return;
+                    }
+                    var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
+                    serverConfigDialog.item = RedisServerConfig(ObjectUtil.clone(tree.selectedItem));
+                    serverConfigDialog.currentState = "edit";
+                    serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, redisServerUpdateListener);
+                    PopUtils.popUp(serverConfigDialog);
+                    break;
+                }
+                case "remove":
+                {
+                    if (tree.selectedIndex == -1) {
+                        return;
+                    }
+                    AlertUtils.confirm("确认删除么?","删除",FlexGlobals.topLevelApplication,function():void{
+
+                        CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(tree.selectedItem),function():void{
+                            loadTreeData();
+                        }));
+
+                    });
+
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+        }
+
+        protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
+            loadTreeData();
         }
         ]]>
     </fx:Script>
@@ -42,14 +97,15 @@
     <fx:Declarations>
 
 
-        <fx:XMLList id="menuList">
-            <menuItem label="sdf">
-                <menuItem label="桑德菲杰"/>
-                <menuItem label="桑德菲f杰"/>
-                <menuItem label="桑德菲s杰"/>
-                <menuItem label="桑德菲e杰"/>
-            </menuItem>
-        </fx:XMLList>
+        <s:ArrayCollection id="menuList">
+            <fx:Object label="服务器" children="{menuchildren}"/>
+        </s:ArrayCollection>
+        <fx:Array id="menuchildren">
+            <fx:Object label="添加" action="add"/>
+            <fx:Object label="修改" action="edit"/>
+            <fx:Object label="移除" action="remove"/>
+            <fx:Object label="属性" action="info"/>
+        </fx:Array>
 
     </fx:Declarations>
 </s:Panel>

@@ -1,6 +1,6 @@
 package com.izerui.redis.service;
 
-import com.izerui.redis.entity.ServerConfig;
+import com.izerui.redis.entity.RedisServerConfig;
 
 import java.util.List;
 
@@ -8,5 +8,7 @@ import java.util.List;
  * Created by serv on 2015/2/3.
  */
 public interface RedisExplorerService{
-    List<ServerConfig> getServerConfigs();
+    List<RedisServerConfig> getServerConfigs();
+    RedisServerConfig saveServerConfig(RedisServerConfig redisServerConfig);
+    void removeServerConfig(RedisServerConfig redisServerConfig);
 }

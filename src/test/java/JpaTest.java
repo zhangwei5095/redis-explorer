@@ -1,5 +1,5 @@
 import com.izerui.redis.Application;
-import com.izerui.redis.entity.ServerConfig;
+import com.izerui.redis.entity.RedisServerConfig;
 import com.izerui.redis.repository.ServerConfigRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +24,17 @@ public class JpaTest {
 
     @Test
     public void findAll(){
-        List<ServerConfig> all = serverConfigRepository.findAll();
+        List<RedisServerConfig> all = serverConfigRepository.findAll();
         Assert.notNull(all);
+    }
+
+    @Test
+    public void initData(){
+        RedisServerConfig redisServerConfig = new RedisServerConfig();
+        redisServerConfig.setHost("localhost");
+        redisServerConfig.setHostName("localhost");
+        redisServerConfig.setPort(6379);
+        serverConfigRepository.save(redisServerConfig);
     }
 
 }

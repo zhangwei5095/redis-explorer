@@ -1,27 +1,43 @@
-<?xml version="1.0"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
-               xmlns:s="library://ns.adobe.com/flex/spark"
-               xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:view="com.izerui.view.*">
-
-
-    <fx:Declarations>
-
-    </fx:Declarations>
-
-    <s:layout>
-        <s:VerticalLayout paddingLeft="6" paddingBottom="6" paddingRight="6"/>
-    </s:layout>
-
-    <s:Group width="100%" height="80">
-        <mx:Image source="@Embed(source='images/redis-logo-small.png')"></mx:Image>
-    </s:Group>
-
-    <mx:HDividedBox width="100%" height="100%">
-        <view:RedisTree width="200" height="100%"/>
-
-        <mx:VDividedBox width="100%" height="100%">
-            <s:Panel height="60%" width="100%"></s:Panel>
-            <s:Panel height="40%" width="100%"></s:Panel>
-        </mx:VDividedBox>
-    </mx:HDividedBox>
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:view="com.izerui.view.*">
+	<s:layout>
+		<s:VerticalLayout paddingLeft="6" paddingBottom="6" paddingRight="6"/>
+	</s:layout>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace local "*";
+		@namespace view "com.izerui.view.*";
+		s|Application{
+			fontSize:12;
+		}
+	</fx:Style>
+	<fx:Declarations>
+		<local:Services/>
+		<local:Controller/>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:Group width="100%" height="80">
+		<mx:Image source="@Embed(source='images/redis-logo-small.png')"></mx:Image>
+	</s:Group>
+	
+	<mx:HDividedBox width="100%" height="100%">
+		<view:RedisTree width="200" height="100%"/>
+		
+		<mx:VDividedBox width="100%" height="100%">
+			<s:Panel height="60%" width="100%"></s:Panel>
+			<s:Group height="40%" width="100%">
+				<mx:TabNavigator width="100%" height="100%">
+					<mx:Container width="100%" height="100%" label="key键">
+						
+					</mx:Container>
+				</mx:TabNavigator>
+			</s:Group>
+		</mx:VDividedBox>
+	</mx:HDividedBox>
+	
+	
 </s:Application>
