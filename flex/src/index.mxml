@@ -28,10 +28,12 @@
 		<view:RedisTree width="200" height="100%"/>
 		
 		<mx:VDividedBox width="100%" height="100%">
-			<s:Panel height="60%" width="100%"></s:Panel>
+			
+			<view:RedisGridList width="100%" height="100%"/>
+			
 			<s:Group height="40%" width="100%">
 				<mx:TabNavigator width="100%" height="100%">
-					<mx:Container width="100%" height="100%" label="key键">
+					<mx:Container width="100%" height="100%">
 						
 					</mx:Container>
 				</mx:TabNavigator>

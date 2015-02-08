@@ -3,7 +3,8 @@
   Created by Administrator on 2015/2/4.
 -->
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-         xmlns:mx="library://ns.adobe.com/flex/mx">
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:support="com.izerui.support.*"
+        title="服务器列表">
 
     <s:layout>
         <s:VerticalLayout/>
@@ -11,26 +12,30 @@
 
     <mx:MenuBar labelField="label" dataProvider="{menuList}" itemClick="menuBar1_itemClickHandler(event)" width="100%"/>
 
-    <mx:Tree id="tree" width="100%" height="100%" labelField="hostName"
+    <support:DoubleClickTree id="tree" width="100%" height="100%" labelField="displayName"
+                             treeItemClick="tree_treeItemClickHandler(event)"
              creationComplete="tree1_creationCompleteHandler(event)">
 
-    </mx:Tree>
+    </support:DoubleClickTree>
 
     <fx:Script><![CDATA[
-		import com.adobe.cairngorm.control.CairngormEventDispatcher;
-		import com.izerui.event.GetServerConfigsEvent;
-		import com.izerui.event.RemoveServerConfigEvent;
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.GetServerConfigsEvent;
+        import com.izerui.event.RemoveServerConfigEvent;
         import com.izerui.support.AlertUtils;
         import com.izerui.support.PopUtils;
-		import com.izerui.support.event.RedisServerUpdateEvent;
+        import com.izerui.support.event.RedisServerUpdateEvent;
+        import com.izerui.support.event.TreeItemClickEvent;
         import com.izerui.vo.RedisServerConfig;
         import com.izerui.vo.RedisServerConfig;
-		
-		import mx.collections.ArrayCollection;
+        import com.izerui.vo.RedisServerConfig;
+
+        import mx.collections.ArrayCollection;
         import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
-		import mx.events.MenuEvent;
-		import mx.utils.ObjectUtil;
+        import mx.events.ListEvent;
+        import mx.events.MenuEvent;
+        import mx.utils.ObjectUtil;
 
 
         private function loadTreeData():void {
@@ -55,7 +60,7 @@
                 }
                 case "edit":
                 {
-                    if (tree.selectedIndex == -1) {
+                    if (tree.selectedIndex == -1||tree.selectedItem.dbIndex != -1) {
                         return;
                     }
                     var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
@@ -67,12 +72,12 @@
                 }
                 case "remove":
                 {
-                    if (tree.selectedIndex == -1) {
+                    if (tree.selectedIndex == -1||tree.selectedItem.dbIndex != -1) {
                         return;
                     }
-                    AlertUtils.confirm("确认删除么?","删除",FlexGlobals.topLevelApplication,function():void{
+                    AlertUtils.confirm("确认删除么?", "删除", FlexGlobals.topLevelApplication, function ():void {
 
-                        CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(tree.selectedItem),function():void{
+                        CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(tree.selectedItem), function ():void {
                             loadTreeData();
                         }));
 
@@ -91,6 +96,13 @@
         protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
             loadTreeData();
         }
+
+        private function tree_treeItemClickHandler(event:TreeItemClickEvent):void {
+            var selItem:RedisServerConfig = RedisServerConfig(tree.selectedItem);
+            if (selItem.dbIndex == -1) {
+
+            }
+        }
         ]]>
     </fx:Script>
 
@@ -98,7 +110,7 @@
 
 
         <s:ArrayCollection id="menuList">
-            <fx:Object label="服务器" children="{menuchildren}"/>
+            <fx:Object label="操作" children="{menuchildren}"/>
         </s:ArrayCollection>
         <fx:Array id="menuchildren">
             <fx:Object label="添加" action="add"/>

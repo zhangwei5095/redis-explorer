@@ -9,6 +9,7 @@ import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,30 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
 
     @Override
     public List<RedisServerConfig> getServerConfigs() {
-        return serverConfigRepository.findAll(new Sort(new Sort.Order("createTime")));
+        List<RedisServerConfig> list = serverConfigRepository.findAll(new Sort(new Sort.Order("createTime")));
+        for (RedisServerConfig server:list){
+            addDbs(server);
+        }
+        return list;
+
+    }
+
+    private void addDbs(RedisServerConfig server){
+        if(server.getDisplayName()==null){
+            server.setDisplayName(server.getHost());
+        }
+        server.setChildren(new ArrayList<RedisServerConfig>());
+        for(int i=0;i<=15;i++){
+            RedisServerConfig childrenItem = new RedisServerConfig();
+            childrenItem.setId(server.getId());
+            childrenItem.setHost(server.getHost());
+            childrenItem.setDisplayName("db"+i);
+            childrenItem.setId(server.getId());
+            childrenItem.setPassword(server.getPassword());
+            childrenItem.setPort(server.getPort());
+            childrenItem.setDbIndex(i);
+            server.getChildren().add(childrenItem);
+        }
     }
 
     @Override

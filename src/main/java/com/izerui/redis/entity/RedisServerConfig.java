@@ -3,6 +3,7 @@ package com.izerui.redis.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,13 +14,18 @@ public class RedisServerConfig implements Serializable{
 
     @Id
     private String id;
-    private String hostName;
+    private String displayName;
     private String host;
     private String password;
     private int port;
     @Column(updatable = false)
     private Date createTime;
     private Date updateTime;
+
+    @Transient
+    private int dbIndex = -1;
+    @Transient
+    private List<RedisServerConfig> children;
 
     public String getId() {
         return id;
@@ -29,12 +35,12 @@ public class RedisServerConfig implements Serializable{
         this.id = id;
     }
 
-    public String getHostName() {
-        return hostName;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getHost() {
@@ -75,6 +81,22 @@ public class RedisServerConfig implements Serializable{
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public int getDbIndex() {
+        return dbIndex;
+    }
+
+    public void setDbIndex(int dbIndex) {
+        this.dbIndex = dbIndex;
+    }
+
+    public List<RedisServerConfig> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<RedisServerConfig> children) {
+        this.children = children;
     }
 
     @PreUpdate

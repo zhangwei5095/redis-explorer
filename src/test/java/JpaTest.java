@@ -32,7 +32,7 @@ public class JpaTest {
     public void initData(){
         RedisServerConfig redisServerConfig = new RedisServerConfig();
         redisServerConfig.setHost("localhost");
-        redisServerConfig.setHostName("localhost");
+        redisServerConfig.setDisplayName("localhost");
         redisServerConfig.setPort(6379);
         serverConfigRepository.save(redisServerConfig);
     }
