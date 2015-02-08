@@ -14,6 +14,26 @@ public abstract class KeyCommand implements Command {
         this.key = key;
     }
 
+    protected long getSize(Jedis jedis){
+        long size ;
+        String type = getType(jedis);
+        if (type.equals("string"))
+            size = (long) 1;
+        else if (type.equals("hash"))
+            size = jedis.hlen(key);
+        else if (type.equals("list"))
+            size = jedis.llen(key);
+        else if (type.equals("set"))
+            size = jedis.scard(key);
+        else
+            size = jedis.zcard(key);
+        return size;
+    }
+
+    protected String getType(Jedis jedis){
+        return jedis.type(key);
+    }
+
     protected boolean existKey(Jedis jedis){
         return jedis.exists(key);
     }

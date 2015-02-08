@@ -15,7 +15,9 @@ public class JedisExecutor {
         if (server.getPassword() != null && server.getPassword().length() > 0) {
             jedis.auth(server.getPassword());
         }
-        jedis.select(server.getDbIndex());
+        if(server.getDbIndex()!=-1){
+            jedis.select(server.getDbIndex());
+        }
     }
 
     public <T extends Command> T execute(T command) {

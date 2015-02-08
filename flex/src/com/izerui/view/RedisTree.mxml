@@ -6,6 +6,10 @@
          xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:support="com.izerui.support.*"
         title="服务器列表">
 
+    <fx:Metadata>
+        [Event(name="dbItemSelectEvent",type="com.izerui.support.event.DbItemSelectEvent")]
+    </fx:Metadata>
+
     <s:layout>
         <s:VerticalLayout/>
     </s:layout>
@@ -20,23 +24,21 @@
 
     <fx:Script><![CDATA[
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.GetDbAmountEvent;
         import com.izerui.event.GetServerConfigsEvent;
         import com.izerui.event.RemoveServerConfigEvent;
         import com.izerui.support.AlertUtils;
         import com.izerui.support.PopUtils;
+        import com.izerui.support.event.DbItemSelectEvent;
         import com.izerui.support.event.RedisServerUpdateEvent;
         import com.izerui.support.event.TreeItemClickEvent;
-        import com.izerui.vo.RedisServerConfig;
-        import com.izerui.vo.RedisServerConfig;
         import com.izerui.vo.RedisServerConfig;
 
         import mx.collections.ArrayCollection;
         import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
-        import mx.events.ListEvent;
         import mx.events.MenuEvent;
         import mx.utils.ObjectUtil;
-
 
         private function loadTreeData():void {
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(function (data:ArrayCollection):void {
@@ -60,7 +62,7 @@
                 }
                 case "edit":
                 {
-                    if (tree.selectedIndex == -1||tree.selectedItem.dbIndex != -1) {
+                    if (tree.selectedIndex == -1 || tree.selectedItem.dbIndex != -1) {
                         return;
                     }
                     var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
@@ -72,7 +74,7 @@
                 }
                 case "remove":
                 {
-                    if (tree.selectedIndex == -1||tree.selectedItem.dbIndex != -1) {
+                    if (tree.selectedIndex == -1 || tree.selectedItem.dbIndex != -1) {
                         return;
                     }
                     AlertUtils.confirm("确认删除么?", "删除", FlexGlobals.topLevelApplication, function ():void {
@@ -99,9 +101,33 @@
 
         private function tree_treeItemClickHandler(event:TreeItemClickEvent):void {
             var selItem:RedisServerConfig = RedisServerConfig(tree.selectedItem);
-            if (selItem.dbIndex == -1) {
-
+            if (selItem.children) {
+                return;
             }
+            if (selItem.dbIndex == -1) {
+                CairngormEventDispatcher.getInstance().dispatchEvent(new GetDbAmountEvent(selItem, function (data:int):void {
+                    selItem.children = new ArrayCollection();
+                    for (var i = 0; i < data; i++) {
+                        var dbConfig:RedisServerConfig = new RedisServerConfig();
+                        dbConfig.id = selItem.id;
+                        dbConfig.host = selItem.host;
+                        dbConfig.port = selItem.port;
+                        dbConfig.password = selItem.password;
+                        dbConfig.createTime = selItem.createTime;
+                        dbConfig.updateTime = selItem.updateTime;
+                        dbConfig.displayName = "db" + i;
+                        dbConfig.dbIndex = i;
+                        selItem.children.addItem(dbConfig);
+                    }
+                    tree.expandItem(selItem, tree);
+                }));
+                return;
+            }
+            //sel db0 ~ db15
+            if (selItem.dbIndex > -1) {
+                this.dispatchEvent(new DbItemSelectEvent(selItem))
+            }
+
         }
         ]]>
     </fx:Script>

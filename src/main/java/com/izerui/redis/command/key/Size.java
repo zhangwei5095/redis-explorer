@@ -16,17 +16,7 @@ public class Size extends KeyCommand {
 
     @Override
     public void command(Jedis jedis) {
-        String type = jedis.type(key);
-        if (type.equals("string"))
-            size = (long) 1;
-        else if (type.equals("hash"))
-            size = jedis.hlen(key);
-        else if (type.equals("list"))
-            size = jedis.llen(key);
-        else if (type.equals("set"))
-            size = jedis.scard(key);
-        else
-            size = jedis.zcard(key);
+        size = getSize(jedis);
     }
 
     public long getSize() {
