@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600" xmlns:local="*" xmlns:view="com.izerui.view.*">
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:local="*"
+			   xmlns:view="com.izerui.view.*"
+			   minWidth="955" minHeight="600">
 	<s:layout>
-		<s:VerticalLayout paddingLeft="6" paddingBottom="6" paddingRight="6"/>
+		<s:VerticalLayout paddingBottom="6" paddingLeft="6" paddingRight="6"/>
 	</s:layout>
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -25,22 +28,16 @@
 	</s:Group>
 	
 	<mx:HDividedBox width="100%" height="100%">
-		<view:RedisTree width="200" height="100%" dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)"/>
+		<view:RedisTree width="200" height="100%"
+						dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)"/>
 		
-		<mx:VDividedBox width="100%" height="100%">
 
 			<s:Panel width="100%" height="100%" title="redis数据浏览器">
-				<view:RedisGridList id="gridList" width="100%" height="100%"/>
+					<view:RedisMain id="mainGrid" width="100%" height="100%">
+						
+					</view:RedisMain>
 			</s:Panel>
 
-			<s:Group height="40%" width="100%">
-				<mx:TabNavigator width="100%" height="100%">
-					<mx:Container width="100%" height="100%">
-						
-					</mx:Container>
-				</mx:TabNavigator>
-			</s:Group>
-		</mx:VDividedBox>
 	</mx:HDividedBox>
 
 
@@ -53,7 +50,7 @@
 
 		private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void{
 			CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeysEvent(event.selItem,function(data:ArrayCollection):void{
-				gridList.dataProvider = data;
+				mainGrid.keyList= data;
 			}));
 
          }

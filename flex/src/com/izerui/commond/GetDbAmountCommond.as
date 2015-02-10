@@ -28,7 +28,7 @@ package com.izerui.commond
 		
 		public function fault(info:Object):void
 		{
-			Alert.show(info.toString(),"提示");
+			Alert.show("连接redis服务器异常!","提示");
 		}
 		
 		public function execute(event:CairngormEvent):void
