@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.izerui.event.GetStringValueEvent;
+			import com.izerui.support.GlobUtils;
+			import com.izerui.vo.Key;
+			
+			import flash.desktop.Clipboard;
+			import flash.desktop.ClipboardFormats;
+			
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			private var _key:Key ;
+			
+			
+			[Bindable]
+			public function get key():Key
+			{
+				return _key;
+			}
+
+			public function set key(value:Key):void
+			{
+				_key = value;
+				getValue();
+			}
+			
+			private function getValue():void{
+				if(key.type!="string"){
+					return;
+				}
+				CairngormEventDispatcher.getInstance().dispatchEvent(new GetStringValueEvent(FlexGlobals.topLevelApplication.server,key.name,function(value:String):void{
+					valueInput.text = value;
+				}));
+			}
+
+		]]>
+	</fx:Script>
+	
+	<mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
+		<s:FormItem width="100%" label="键  (key):">
+			<s:HGroup  width="100%" >
+				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
+				<s:Button label="复制" click="GlobUtils.copyValue(keyInput.text)"/>
+			</s:HGroup>
+		</s:FormItem>
+		<s:FormItem width="100%" label="值(value):">
+			<s:HGroup  width="100%" >
+				<s:TextArea id="valueInput" width="100%" height="200"/>
+				<s:Button label="复制" click="GlobUtils.copyValue(valueInput.text)"/>
+			</s:HGroup>
+		</s:FormItem>
+		<s:FormItem width="100%">
+			<s:HGroup horizontalAlign="right" width="100%" >
+				<s:Button label="应用"/>
+				<s:Button label="取消" click="getValue()"/>
+			</s:HGroup>
+		</s:FormItem>
+	</mx:Form>
+</s:VGroup>

@@ -23,6 +23,28 @@
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
 	
+	<fx:Script><![CDATA[
+		import com.adobe.cairngorm.control.CairngormEventDispatcher;
+		import com.izerui.event.GetKeysEvent;
+		import com.izerui.support.event.DbItemSelectEvent;
+		import com.izerui.vo.RedisServerConfig;
+		
+		import mx.collections.ArrayCollection;
+		
+		[Bindable]
+		public var server:RedisServerConfig;
+		
+		private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void{
+			server = event.selItem;
+			CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeysEvent(event.selItem,function(data:ArrayCollection):void{
+				mainGrid.currentState = "listState";
+				mainGrid.keyList= data;
+			}));
+			
+		}
+	]]>
+	</fx:Script>
+	
 	<s:Group width="100%" height="80">
 		<mx:Image source="@Embed(source='images/redis-logo-small.png')"></mx:Image>
 	</s:Group>
@@ -39,21 +61,8 @@
 			</s:Panel>
 
 	</mx:HDividedBox>
-
-
-	<fx:Script><![CDATA[
-		import com.adobe.cairngorm.control.CairngormEventDispatcher;
-		import com.izerui.event.GetKeysEvent;
-		import com.izerui.support.event.DbItemSelectEvent;
-
-		import mx.collections.ArrayCollection;
-
-		private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void{
-			CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeysEvent(event.selItem,function(data:ArrayCollection):void{
-				mainGrid.keyList= data;
-			}));
-
-         }
-		]]>
-	</fx:Script>
+	<s:HGroup width="100%"  horizontalAlign="center">
+		<s:Label text="Copyright © 2014-2015 power by 刘玉华"/>
+	</s:HGroup>
+	
 </s:Application>

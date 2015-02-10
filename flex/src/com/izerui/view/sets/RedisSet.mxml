@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="622" height="382">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.izerui.event.GetHashValueEvent;
+			import com.izerui.event.GetListValueEvent;
+			import com.izerui.event.GetSetValueEvent;
+			import com.izerui.support.GlobUtils;
+			import com.izerui.vo.Key;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			
+			private var _key:Key ;
+			
+			
+			[Bindable]
+			public function get key():Key
+			{
+				return _key;
+			}
+			
+			public function set key(value:Key):void
+			{
+				_key = value;
+				getValue();
+			}
+			
+			private function getValue():void{
+				if(key.type!="set"){
+					return;
+				}
+				CairngormEventDispatcher.getInstance().dispatchEvent(new GetSetValueEvent(
+					FlexGlobals.topLevelApplication.server,
+					key.name,
+					function(data:ArrayCollection):void{
+						setData.dataProvider = data;
+					}
+				));
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
+		<s:FormItem width="100%" label="键  (key):" >
+			<s:HGroup  width="100%" >
+				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
+				<s:Button label="复制" click="GlobUtils.copyValue(keyInput.text)"/>
+			</s:HGroup>
+		</s:FormItem>
+		<s:FormItem width="100%" label="集合(值):">
+			<s:HGroup width="100%">
+				
+				<s:List id="setData" width="100%" height="200">
+					
+				</s:List>
+				<s:VGroup>
+					<s:Button label="添加"/>
+					<s:Button label="删除"/>
+					<s:Button label="应用"/>
+					<s:Button label="取消" click="getValue()"/>
+				</s:VGroup>
+			</s:HGroup>
+		</s:FormItem>
+	</mx:Form>
+	
+	
+</s:VGroup>
