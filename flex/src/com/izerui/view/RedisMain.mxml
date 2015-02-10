@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VDividedBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:view="com.izerui.view.*" currentState="listState">
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<mx:states>
+		<s:State name="listState"/>
+		<s:State name="infoState"/>
+	</mx:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.izerui.vo.Key;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			
+			private var _keyList:Object;
+			
+			[Bindable]
+			public function get keyList():Object
+			{
+				return _keyList;
+			}
+
+			public function set keyList(value:Object):void
+			{
+				_keyList = value;
+			}
+			
+			
+
+			protected function gridList_itemClickHandler(event:ListEvent):void
+			{
+				this.currentState = "infoState";
+				tabInfo.key = Key(gridList.selectedItem);
+				tabInfo.label = tabInfo.key.name;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<view:RedisGridList id="gridList" width="100%" height="60%" dataProvider="@{keyList}" itemClick="gridList_itemClickHandler(event)"/>
+	
+	<mx:TabNavigator width="100%" height="40%">
+		<view:RedisInfoTab id="tabInfo" width="100%" height="100%" includeIn="infoState">
+			
+		</view:RedisInfoTab>
+	</mx:TabNavigator>
+	
+</mx:VDividedBox>
