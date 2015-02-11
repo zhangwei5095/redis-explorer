@@ -10,12 +10,14 @@
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.izerui.event.GetStringValueEvent;
+			import com.izerui.event.SaveStringValueEvent;
 			import com.izerui.support.GlobUtils;
 			import com.izerui.vo.Key;
 			
 			import flash.desktop.Clipboard;
 			import flash.desktop.ClipboardFormats;
 			
+			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
 			
@@ -43,6 +45,23 @@
 				}));
 			}
 
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				if(!valueInput.text){
+					Alert.show("请添加值","提示");
+					return;
+				}
+				CairngormEventDispatcher.getInstance().dispatchEvent(new SaveStringValueEvent(
+					FlexGlobals.topLevelApplication.server,
+					key.name,
+					valueInput.text,
+					function():void{
+						Alert.show("保存成功","提示");
+						getValue();
+					}
+				));
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -55,13 +74,13 @@
 		</s:FormItem>
 		<s:FormItem width="100%" label="值(value):">
 			<s:HGroup  width="100%" >
-				<s:TextArea id="valueInput" width="100%" height="200"/>
+				<s:TextArea id="valueInput" width="100%" height="150"/>
 				<s:Button label="复制" click="GlobUtils.copyValue(valueInput.text)"/>
 			</s:HGroup>
 		</s:FormItem>
 		<s:FormItem width="100%">
 			<s:HGroup horizontalAlign="right" width="100%" >
-				<s:Button label="应用"/>
+				<s:Button label="应用" click="button1_clickHandler(event)"/>
 				<s:Button label="取消" click="getValue()"/>
 			</s:HGroup>
 		</s:FormItem>

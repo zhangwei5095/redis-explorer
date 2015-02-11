@@ -21,8 +21,10 @@ public class UpdateString extends AddString{
         //添加
         super.command(jedis);
 
-        //设置超时时间
-        expire(jedis,seconds);
+        if(seconds>-1){
+            //设置超时时间
+            expire(jedis,seconds);
+        }
 
     }
 }

@@ -4,17 +4,21 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.izerui.redis.command.JedisExecutor;
+import com.izerui.redis.command.hash.AddHash;
 import com.izerui.redis.command.hash.ReadHash;
+import com.izerui.redis.command.key.Delete;
 import com.izerui.redis.command.key.ListKeys;
 import com.izerui.redis.command.list.AllList;
 import com.izerui.redis.command.server.DbAmount;
 import com.izerui.redis.command.set.AllSet;
 import com.izerui.redis.command.string.ReadString;
+import com.izerui.redis.command.string.UpdateString;
 import com.izerui.redis.command.zset.AllZSet;
 import com.izerui.redis.dto.Key;
 import com.izerui.redis.entity.RedisServerConfig;
 import com.izerui.redis.repository.ServerConfigRepository;
 import com.izerui.redis.service.RedisExplorerService;
+import com.izerui.redis.utils.MapListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -70,16 +74,23 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
+    public void saveStringValue(RedisServerConfig redisServerConfig, String key, String value) {
+        new JedisExecutor(redisServerConfig).execute(new UpdateString(key,value));
+    }
+
+    @Override
     public List<Map<String, String>> getHashValue(RedisServerConfig redisServerConfig, String key) {
-        List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
         Map<String, String> map = new JedisExecutor(redisServerConfig).execute(new ReadHash(key)).getValue();
-        for(Map.Entry<String,String> entry:map.entrySet()){
-            Map<String,String> obj = new HashMap<String, String>();
-            obj.put("key",entry.getKey());
-            obj.put("value",entry.getValue());
-            mapList.add(obj);
-        }
-        return mapList;
+        return MapListUtils.map2KvLists(map);
+    }
+
+    @Override
+    public void saveHashValue(RedisServerConfig redisServerConfig, String key, List<Map<String, String>> mapList) {
+        JedisExecutor executor = new JedisExecutor(redisServerConfig);
+        //delete key
+        executor.execute(new Delete(key));
+        //add hash
+        executor.execute(new AddHash(key,MapListUtils.kvList2Map(mapList)));
     }
 
     @Override

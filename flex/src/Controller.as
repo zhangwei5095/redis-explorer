@@ -9,7 +9,9 @@ import com.izerui.commond.GetSetValueCommond;
 import com.izerui.commond.GetStringValueCommond;
 import com.izerui.commond.GetZSetValueCommond;
 import com.izerui.commond.RemoveServerConfigCommond;
+import com.izerui.commond.SaveHashValueCommond;
 import com.izerui.commond.SaveServerConfigCommond;
+import com.izerui.commond.SaveStringValueCommond;
 
 public class Controller extends FrontController {
 
@@ -24,6 +26,8 @@ public class Controller extends FrontController {
         this.addCommand("getListValue", GetListValueCommond);
         this.addCommand("getSetValue", GetSetValueCommond);
         this.addCommand("getZSetValue", GetZSetValueCommond);
+        this.addCommand("saveHashValue", SaveHashValueCommond);
+        this.addCommand("saveStringValue", SaveStringValueCommond);
     }
 
     public function Controller() {
