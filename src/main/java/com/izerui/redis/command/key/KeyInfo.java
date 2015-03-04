@@ -21,6 +21,7 @@ public class KeyInfo extends KeyCommand {
         keyInfo.setName(key);
         keyInfo.setSize(getSize(jedis));
         keyInfo.setType(getType(jedis));
+        keyInfo.setTtls(getTtl(jedis));
     }
 
     public Key getKey() {

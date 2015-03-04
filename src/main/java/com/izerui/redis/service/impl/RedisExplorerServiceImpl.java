@@ -8,6 +8,8 @@ import com.izerui.redis.command.hash.AddHash;
 import com.izerui.redis.command.hash.ReadHash;
 import com.izerui.redis.command.key.*;
 import com.izerui.redis.command.list.AllList;
+import com.izerui.redis.command.list.SetValue;
+import com.izerui.redis.command.list.UpdateList;
 import com.izerui.redis.command.server.DbAmount;
 import com.izerui.redis.command.set.AllSet;
 import com.izerui.redis.command.string.ReadString;
@@ -25,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Tuple;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by serv on 2015/2/3.
@@ -71,6 +70,11 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
+    public Key getKey(RedisServerConfig redisServerConfig, String key) {
+        return new JedisExecutor(redisServerConfig).execute(new KeyInfo(key)).getKey();
+    }
+
+    @Override
     public String getStringValue(RedisServerConfig redisServerConfig, String key) {
         return new JedisExecutor(redisServerConfig).execute(new ReadString(key)).getValue();
     }
@@ -96,8 +100,27 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
-    public List<String> getListValue(RedisServerConfig redisServerConfig, String key) {
-        return new JedisExecutor(redisServerConfig).execute(new AllList(key)).getValues();
+    public List<Map<String, String>> getListValue(RedisServerConfig redisServerConfig, String key) {
+        List<String> values = new JedisExecutor(redisServerConfig).execute(new AllList(key)).getValues();
+        return Lists.transform(values, new Function<String, Map<String,String>>() {
+            @Override
+            public Map<String, String> apply(String s) {
+                Map<String,String> map = new HashMap<String, String>();
+                map.put("label",s);
+                return map;
+            }
+        });
+    }
+
+    @Override
+    public void setListValue(RedisServerConfig redisServerConfig, String key, List<Map<String, String>> values) {
+        List<String> newValues = Lists.transform(values, new Function<Map<String, String>, String>() {
+            @Override
+            public String apply(Map<String, String> stringStringMap) {
+                return stringStringMap.get("label");
+            }
+        });
+        new JedisExecutor(redisServerConfig).execute(new UpdateList(key, newValues));
     }
 
     @Override

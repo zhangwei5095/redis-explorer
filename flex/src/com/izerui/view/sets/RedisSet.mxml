@@ -21,6 +21,8 @@
 			
 			private var _key:Key ;
 			
+			public var updateGridItem:Function;
+			
 			
 			[Bindable]
 			public function get key():Key

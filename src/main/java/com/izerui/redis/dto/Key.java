@@ -9,6 +9,7 @@ public class Key implements Serializable {
     private String name;
     private String type;
     private long size;
+    private long ttls;
 
     public String getName() {
         return name;
@@ -32,5 +33,13 @@ public class Key implements Serializable {
 
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public long getTtls() {
+        return ttls;
+    }
+
+    public void setTtls(long ttls) {
+        this.ttls = ttls;
     }
 }

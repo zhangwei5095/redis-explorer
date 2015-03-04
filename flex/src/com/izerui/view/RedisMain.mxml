@@ -13,9 +13,13 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.izerui.event.GetKeyEvent;
+			import com.izerui.support.event.KeyDataChangeEvent;
 			import com.izerui.vo.Key;
 			
 			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
 			import mx.events.ListEvent;
 			
 			private var _keyList:Object;
@@ -36,8 +40,23 @@
 			protected function gridList_itemClickHandler(event:ListEvent):void
 			{
 				this.currentState = "infoState";
-				tabInfo.key = Key(gridList.selectedItem);
-				tabInfo.label = tabInfo.key.name;
+				var key:Key = Key(gridList.selectedItem);
+				key.rowIndex = gridList.selectedIndex;
+				tabInfo.key = key;
+				tabInfo.label = key.name;
+			}
+			
+			protected function tabInfo_keyDataChangeEventHandler(event:KeyDataChangeEvent):void
+			{
+				CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeyEvent(
+					FlexGlobals.topLevelApplication.server,
+					event.key.name,
+					function(data:Key):void{
+						ArrayCollection(gridList.dataProvider).setItemAt(data,event.key.rowIndex);
+						ArrayCollection(gridList.dataProvider).itemUpdated(data);
+					}
+				));
+				var newData:Key
 			}
 			
 		]]>
@@ -45,7 +64,7 @@
 	
 	<view:RedisGridList id="gridList" width="100%" height="55%" dataProvider="@{keyList}" itemClick="gridList_itemClickHandler(event)"/>
 	
-	<view:RedisInfoTab id="tabInfo" width="100%" height="45%" minHeight="300" includeIn="infoState">
+	<view:RedisInfoTab id="tabInfo" width="100%" height="45%" minHeight="300" includeIn="infoState" keyDataChangeEvent="tabInfo_keyDataChangeEventHandler(event)">
 		
 	</view:RedisInfoTab>
 	

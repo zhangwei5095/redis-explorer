@@ -18,11 +18,13 @@ public interface RedisExplorerService{
     void removeServerConfig(RedisServerConfig redisServerConfig);
     int getDbAmount(RedisServerConfig redisServerConfig);
     List<Key> getKeys(RedisServerConfig redisServerConfig);
+    Key getKey(RedisServerConfig redisServerConfig,String key);
     String getStringValue(RedisServerConfig redisServerConfig,String key);
     void saveStringValue(RedisServerConfig redisServerConfig,String key,String value);
     List<Map<String, String>> getHashValue(RedisServerConfig redisServerConfig,String key);
     void saveHashValue(RedisServerConfig redisServerConfig,String key,List<Map<String, String>> mapList);
-    List<String> getListValue(RedisServerConfig redisServerConfig,String key);
+    List<Map<String, String>> getListValue(RedisServerConfig redisServerConfig,String key);
+    void setListValue(RedisServerConfig redisServerConfig,String key,List<Map<String, String>> values);
     Set<String> getSetValue(RedisServerConfig redisServerConfig,String key);
     List<String> getZSetValue(RedisServerConfig redisServerConfig, String key);
     Long getIdletime(RedisServerConfig redisServerConfig, String key);

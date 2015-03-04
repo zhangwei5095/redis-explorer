@@ -47,6 +47,9 @@ public abstract class KeyCommand implements Command {
     }
 
     protected void expire(Jedis jedis,int seconds){
+        if(seconds<=0){
+            return;
+        }
         jedis.expire(key,seconds);
     }
 

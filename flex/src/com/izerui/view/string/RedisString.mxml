@@ -23,6 +23,8 @@
 			
 			private var _key:Key ;
 			
+			public var updateGridItem:Function;
+			
 			
 			[Bindable]
 			public function get key():Key
@@ -57,6 +59,7 @@
 					valueInput.text,
 					function():void{
 						Alert.show("保存成功","提示");
+						updateGridItem.call(null);
 						getValue();
 					}
 				));

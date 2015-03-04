@@ -3,6 +3,7 @@ import com.adobe.cairngorm.control.FrontController;
 import com.izerui.commond.GetDbAmountCommond;
 import com.izerui.commond.GetHashValueCommond;
 import com.izerui.commond.GetIdletimeCommond;
+import com.izerui.commond.GetKeyCommond;
 import com.izerui.commond.GetKeysCommond;
 import com.izerui.commond.GetListValueCommond;
 import com.izerui.commond.GetServerConfigsCommond;
@@ -15,6 +16,7 @@ import com.izerui.commond.SaveHashValueCommond;
 import com.izerui.commond.SaveServerConfigCommond;
 import com.izerui.commond.SaveStringValueCommond;
 import com.izerui.commond.SetExpireCommond;
+import com.izerui.commond.SetListValueCommond;
 
 public class Controller extends FrontController {
 
@@ -24,6 +26,7 @@ public class Controller extends FrontController {
         this.addCommand("removeServerConfig", RemoveServerConfigCommond);
         this.addCommand("getDbAmount", GetDbAmountCommond);
         this.addCommand("getKeys", GetKeysCommond);
+        this.addCommand("getKey", GetKeyCommond);
         this.addCommand("getStringValue", GetStringValueCommond);
         this.addCommand("getHashValue", GetHashValueCommond);
         this.addCommand("getListValue", GetListValueCommond);
@@ -34,6 +37,7 @@ public class Controller extends FrontController {
         this.addCommand("getIdletime", GetIdletimeCommond);
         this.addCommand("getTTLs", GetTTLsCommond);
         this.addCommand("setExpire", SetExpireCommond);
+        this.addCommand("setListValue", SetListValueCommond);
     }
 
     public function Controller() {

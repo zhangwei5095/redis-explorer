@@ -12,13 +12,20 @@
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.izerui.event.GetHashValueEvent;
 			import com.izerui.event.GetListValueEvent;
+			import com.izerui.event.SetListValueEvent;
 			import com.izerui.support.GlobUtils;
 			import com.izerui.vo.Key;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.core.FlexGlobals;
+			import mx.events.DragEvent;
+			import mx.events.ListEvent;
+			import mx.managers.DragManager;
 			
 			private var _key:Key ;
+			
+			public var updateGridItem:Function;
 			
 			
 			[Bindable]
@@ -47,6 +54,54 @@
 			}
 			
 			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var dataList:ArrayCollection = (listData.dataProvider as ArrayCollection);
+				dataList.addItem({"label":"null"});
+				listData.selectedIndex = dataList.length;
+				listData.scrollToIndex(listData.selectedIndex);
+			}
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				if(listData.selectedIndex==-1){
+					return;
+				}
+				var dataList:ArrayCollection = (listData.dataProvider as ArrayCollection);
+				dataList.removeItemAt(listData.selectedIndex);
+				dataList.refresh();
+			}
+			
+			protected function button3_clickHandler(event:MouseEvent):void
+			{
+				if(!listData.dataProvider||!listData.dataProvider.length){
+					Alert.show("请添加值","提示");
+					return;
+				}
+				CairngormEventDispatcher.getInstance().dispatchEvent(new SetListValueEvent(
+					FlexGlobals.topLevelApplication.server,
+					key.name,
+					listData.dataProvider,
+					function():void{
+						Alert.show("保存成功","提示");
+						updateGridItem.call(null);
+						getValue();
+					}
+				));
+			}
+			
+			
+			
+			protected function listData_dragStartHandler(event:DragEvent):void
+			{
+				listData.editable = false;
+			}
+			
+			protected function listData_dragCompleteHandler(event:DragEvent):void
+			{
+				listData.editable = true;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -60,13 +115,21 @@
 		<s:FormItem width="100%" label="列表(值):">
 			<s:HGroup width="100%">
 				
-				<s:List id="listData" width="100%" height="200">
-					
-				</s:List>
+				<mx:DataGrid id="listData" width="100%" height="200" editable="true" 
+							 dropEnabled="true" 
+							 dragEnabled="true" 
+							 toolTip="拖动可以排序"
+							 dragMoveEnabled="true"
+							 dragStart="listData_dragStartHandler(event)"
+							 dragComplete="listData_dragCompleteHandler(event)">
+					<mx:columns>
+						<mx:DataGridColumn dataField="label" headerText="值" sortable="false"/>
+					</mx:columns>
+				</mx:DataGrid>
 				<s:VGroup>
-					<s:Button label="添加"/>
-					<s:Button label="删除"/>
-					<s:Button label="应用"/>
+					<s:Button label="添加" click="button1_clickHandler(event)"/>
+					<s:Button label="删除" click="button2_clickHandler(event)"/>
+					<s:Button label="应用" click="button3_clickHandler(event)"/>
 					<s:Button label="取消" click="getValue()"/>
 				</s:VGroup>
 			</s:HGroup>
