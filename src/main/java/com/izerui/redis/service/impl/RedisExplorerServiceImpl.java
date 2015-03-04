@@ -6,8 +6,7 @@ import com.google.common.collect.Lists;
 import com.izerui.redis.command.JedisExecutor;
 import com.izerui.redis.command.hash.AddHash;
 import com.izerui.redis.command.hash.ReadHash;
-import com.izerui.redis.command.key.Delete;
-import com.izerui.redis.command.key.ListKeys;
+import com.izerui.redis.command.key.*;
 import com.izerui.redis.command.list.AllList;
 import com.izerui.redis.command.server.DbAmount;
 import com.izerui.redis.command.set.AllSet;
@@ -26,7 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Tuple;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by serv on 2015/2/3.
@@ -113,5 +115,20 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
             }
         });
         return Lists.newArrayList(transform);
+    }
+
+    @Override
+    public Long getIdletime(RedisServerConfig redisServerConfig, String key) {
+        return new JedisExecutor(redisServerConfig).execute(new Idletime(key)).getIdleTime();
+    }
+
+    @Override
+    public Long getTTLs(RedisServerConfig redisServerConfig, String key) {
+        return new JedisExecutor(redisServerConfig).execute(new TTLs(key)).getSecond();
+    }
+
+    @Override
+    public void setExpire(RedisServerConfig redisServerConfig, String key, int expire) {
+        new JedisExecutor(redisServerConfig).execute(new Expire(key,expire));
     }
 }

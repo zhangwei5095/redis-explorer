@@ -25,4 +25,7 @@ public interface RedisExplorerService{
     List<String> getListValue(RedisServerConfig redisServerConfig,String key);
     Set<String> getSetValue(RedisServerConfig redisServerConfig,String key);
     List<String> getZSetValue(RedisServerConfig redisServerConfig, String key);
+    Long getIdletime(RedisServerConfig redisServerConfig, String key);
+    Long getTTLs(RedisServerConfig redisServerConfig, String key);
+    void setExpire(RedisServerConfig redisServerConfig, String key,int expire);
 }
