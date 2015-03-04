@@ -50,14 +50,21 @@
             loadTreeData();
         }
 
+        private function openServerConfigDialog(sateName:String,listener:Function,item:RedisServerConfig=null):void{
+            var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
+            if(item){
+                serverConfigDialog.item = item;
+            }
+            serverConfigDialog.currentState = sateName;
+            serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, listener);
+            PopUtils.popUp(serverConfigDialog);
+        }
+
         private function menuBar1_itemClickHandler(event:MenuEvent):void {
             switch (event.item.action) {
                 case "add":
                 {
-                    var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
-                    serverConfigDialog.currentState = "add";
-                    serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, redisServerUpdateListener);
-                    PopUtils.popUp(serverConfigDialog);
+                    openServerConfigDialog("add", redisServerUpdateListener);
                     break;
                 }
                 case "edit":
@@ -65,11 +72,7 @@
                     if (tree.selectedIndex == -1 || tree.selectedItem.dbIndex != -1) {
                         return;
                     }
-                    var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
-                    serverConfigDialog.item = RedisServerConfig(ObjectUtil.clone(tree.selectedItem));
-                    serverConfigDialog.currentState = "edit";
-                    serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, redisServerUpdateListener);
-                    PopUtils.popUp(serverConfigDialog);
+                    openServerConfigDialog("edit", redisServerUpdateListener,RedisServerConfig(ObjectUtil.clone(tree.selectedItem)));
                     break;
                 }
                 case "remove":
@@ -107,7 +110,7 @@
             if (selItem.dbIndex == -1) {
                 CairngormEventDispatcher.getInstance().dispatchEvent(new GetDbAmountEvent(selItem, function (data:int):void {
                     selItem.children = new ArrayCollection();
-                    for (var i = 0; i < data; i++) {
+                    for (var i:int = 0; i < data; i++) {
                         var dbConfig:RedisServerConfig = new RedisServerConfig();
                         dbConfig.id = selItem.id;
                         dbConfig.host = selItem.host;
@@ -119,7 +122,7 @@
                         dbConfig.dbIndex = i;
                         selItem.children.addItem(dbConfig);
                     }
-                    tree.expandItem(selItem, tree);
+                    tree.expandItem(selItem,true,true);
                 }));
                 return;
             }

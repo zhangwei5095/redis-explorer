@@ -67,10 +67,10 @@
 	</fx:Declarations>
 	<s:controlBarContent>
 		<s:HGroup horizontalAlign="right" width="100%">
-			<s:Button label="确认" click="button1_clickHandler(event)">
+			<s:Button label="确认" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)">
 				
 			</s:Button>
-			<s:Button label="取消" click="PopUtils.removeUp(this);">
+			<s:Button label="取消" icon="@Embed('/images/redo.png')" click="PopUtils.removeUp(this);">
 				
 			</s:Button>
 			

@@ -137,8 +137,8 @@
 			</s:FormItem>
 			<s:FormItem width="100%">
 				<s:HGroup horizontalAlign="right" width="100%" >
-					<s:Button label="应用" click="button1_clickHandler(event)"/>
-					<s:Button label="取消" click="refrashTTLs();"/>
+					<s:Button label="应用" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)"/>
+					<s:Button label="取消" icon="@Embed('/images/redo.png')" click="refrashTTLs();"/>
 				</s:HGroup>
 			</s:FormItem>
 		</s:Form>

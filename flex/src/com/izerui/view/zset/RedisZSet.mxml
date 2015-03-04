@@ -58,7 +58,7 @@
 		<s:FormItem width="100%" label="键  (key):" >
 			<s:HGroup  width="100%" >
 				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
-				<s:Button label="复制" click="GlobUtils.copyValue(keyInput.text)"/>
+				<s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
 			</s:HGroup>
 		</s:FormItem>
 		<s:FormItem width="100%" label="集合(值):">
@@ -68,10 +68,10 @@
 					
 				</s:List>
 				<s:VGroup>
-					<s:Button label="添加"/>
-					<s:Button label="删除"/>
-					<s:Button label="应用"/>
-					<s:Button label="取消" click="getValue()"/>
+					<s:Button label="添加" icon="@Embed('/images/add.png')"/>
+					<s:Button label="删除" icon="@Embed('/images/delete.png')"/>
+					<s:Button label="应用" icon="@Embed('/images/accept.png')"/>
+					<s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
 				</s:VGroup>
 			</s:HGroup>
 		</s:FormItem>

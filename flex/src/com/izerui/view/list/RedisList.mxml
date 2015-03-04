@@ -9,107 +9,95 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
-			import com.izerui.event.GetHashValueEvent;
-			import com.izerui.event.GetListValueEvent;
-			import com.izerui.event.SetListValueEvent;
-			import com.izerui.support.GlobUtils;
-			import com.izerui.vo.Key;
-			
-			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
-			import mx.core.FlexGlobals;
-			import mx.events.DragEvent;
-			import mx.events.ListEvent;
-			import mx.managers.DragManager;
-			
-			private var _key:Key ;
-			
-			public var updateGridItem:Function;
-			
-			
-			[Bindable]
-			public function get key():Key
-			{
-				return _key;
-			}
-			
-			public function set key(value:Key):void
-			{
-				_key = value;
-				getValue();
-			}
-			
-			private function getValue():void{
-				if(key.type!="list"){
-					return;
-				}
-				CairngormEventDispatcher.getInstance().dispatchEvent(new GetListValueEvent(
-					FlexGlobals.topLevelApplication.server,
-					key.name,
-					function(data:ArrayCollection):void{
-						listData.dataProvider = data;
-					}
-				));
-			}
-			
-			
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				var dataList:ArrayCollection = (listData.dataProvider as ArrayCollection);
-				dataList.addItem({"label":"null"});
-				listData.selectedIndex = dataList.length;
-				listData.scrollToIndex(listData.selectedIndex);
-			}
-			
-			protected function button2_clickHandler(event:MouseEvent):void
-			{
-				if(listData.selectedIndex==-1){
-					return;
-				}
-				var dataList:ArrayCollection = (listData.dataProvider as ArrayCollection);
-				dataList.removeItemAt(listData.selectedIndex);
-				dataList.refresh();
-			}
-			
-			protected function button3_clickHandler(event:MouseEvent):void
-			{
-				if(!listData.dataProvider||!listData.dataProvider.length){
-					Alert.show("请添加值","提示");
-					return;
-				}
-				CairngormEventDispatcher.getInstance().dispatchEvent(new SetListValueEvent(
-					FlexGlobals.topLevelApplication.server,
-					key.name,
-					listData.dataProvider,
-					function():void{
-						Alert.show("保存成功","提示");
-						updateGridItem.call(null);
-						getValue();
-					}
-				));
-			}
-			
-			
-			
-			protected function listData_dragStartHandler(event:DragEvent):void
-			{
-				listData.editable = false;
-			}
-			
-			protected function listData_dragCompleteHandler(event:DragEvent):void
-			{
-				listData.editable = true;
-			}
-			
-		]]>
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.GetListValueEvent;
+        import com.izerui.event.SetListValueEvent;
+        import com.izerui.support.GlobUtils;
+        import com.izerui.vo.Key;
+
+        import mx.collections.ArrayCollection;
+        import mx.controls.Alert;
+        import mx.core.FlexGlobals;
+        import mx.events.DragEvent;
+
+        private var _key:Key;
+
+        public var updateGridItem:Function;
+
+
+        [Bindable]
+        public function get key():Key {
+            return _key;
+        }
+
+        public function set key(value:Key):void {
+            _key = value;
+            getValue();
+        }
+
+        private function getValue():void {
+            if (key.type != "list") {
+                return;
+            }
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetListValueEvent(
+                    FlexGlobals.topLevelApplication.server,
+                    key.name,
+                    function (data:ArrayCollection):void {
+                        listData.dataProvider = data;
+                    }
+            ));
+        }
+
+
+        protected function button1_clickHandler(event:MouseEvent):void {
+            var dataList:ArrayCollection = (listData.dataProvider as ArrayCollection);
+            dataList.addItem({"label": "null"});
+            listData.selectedIndex = dataList.length;
+            listData.scrollToIndex(listData.selectedIndex);
+        }
+
+        protected function button2_clickHandler(event:MouseEvent):void {
+            if (listData.selectedIndex == -1) {
+                return;
+            }
+            var dataList:ArrayCollection = (listData.dataProvider as ArrayCollection);
+            dataList.removeItemAt(listData.selectedIndex);
+            dataList.refresh();
+        }
+
+        protected function button3_clickHandler(event:MouseEvent):void {
+            if (!listData.dataProvider || !listData.dataProvider.length) {
+                Alert.show("请添加值", "提示");
+                return;
+            }
+            CairngormEventDispatcher.getInstance().dispatchEvent(new SetListValueEvent(
+                    FlexGlobals.topLevelApplication.server,
+                    key.name,
+                    listData.dataProvider,
+                    function ():void {
+                        Alert.show("保存成功", "提示");
+                        updateGridItem.call(null);
+                        getValue();
+                    }
+            ));
+        }
+
+
+        protected function listData_dragStartHandler(event:DragEvent):void {
+            listData.editable = false;
+        }
+
+        protected function listData_dragCompleteHandler(event:DragEvent):void {
+            listData.editable = true;
+        }
+        ]]>
 	</fx:Script>
 	
 	<mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
 		<s:FormItem width="100%" label="键  (key):" >
 			<s:HGroup  width="100%" >
 				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
-				<s:Button label="复制" click="GlobUtils.copyValue(keyInput.text)"/>
+				<s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
 			</s:HGroup>
 		</s:FormItem>
 		<s:FormItem width="100%" label="列表(值):">
@@ -127,10 +115,10 @@
 					</mx:columns>
 				</mx:DataGrid>
 				<s:VGroup>
-					<s:Button label="添加" click="button1_clickHandler(event)"/>
-					<s:Button label="删除" click="button2_clickHandler(event)"/>
-					<s:Button label="应用" click="button3_clickHandler(event)"/>
-					<s:Button label="取消" click="getValue()"/>
+					<s:Button label="添加" icon="@Embed('/images/add.png')" click="button1_clickHandler(event)"/>
+					<s:Button label="删除" icon="@Embed('/images/delete.png')" click="button2_clickHandler(event)"/>
+					<s:Button label="应用" icon="@Embed('/images/accept.png')" click="button3_clickHandler(event)"/>
+					<s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
 				</s:VGroup>
 			</s:HGroup>
 		</s:FormItem>

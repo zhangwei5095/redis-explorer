@@ -39,11 +39,15 @@
 
 			protected function gridList_itemClickHandler(event:ListEvent):void
 			{
+                if(gridList.selectedIndex==-1){
+                    return;
+                }
 				this.currentState = "infoState";
 				var key:Key = Key(gridList.selectedItem);
 				key.rowIndex = gridList.selectedIndex;
 				tabInfo.key = key;
 				tabInfo.label = key.name;
+                tabInfo.selectedIndex = 0;
 			}
 			
 			protected function tabInfo_keyDataChangeEventHandler(event:KeyDataChangeEvent):void
@@ -56,7 +60,6 @@
 						ArrayCollection(gridList.dataProvider).itemUpdated(data);
 					}
 				));
-				var newData:Key
 			}
 			
 		]]>
