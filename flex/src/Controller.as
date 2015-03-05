@@ -18,6 +18,7 @@ import com.izerui.commond.SaveStringValueCommond;
 import com.izerui.commond.SetExpireCommond;
 import com.izerui.commond.SetListValueCommond;
 import com.izerui.commond.SetSetValueCommond;
+import com.izerui.commond.SetZSetValueCommond;
 
 public class Controller extends FrontController {
 
@@ -40,6 +41,7 @@ public class Controller extends FrontController {
         this.addCommand("setExpire", SetExpireCommond);
         this.addCommand("setListValue", SetListValueCommond);
         this.addCommand("setSetValue", SetSetValueCommond);
+        this.addCommand("setZSetValue", SetZSetValueCommond);
     }
 
     public function Controller() {

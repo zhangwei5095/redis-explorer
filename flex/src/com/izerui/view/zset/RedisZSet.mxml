@@ -1,81 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-		  xmlns:s="library://ns.adobe.com/flex/spark"
-		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  width="622" height="382">
-	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-	</fx:Declarations>
-	
-	<fx:Script>
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          width="622" height="382">
+    <fx:Declarations>
+        <!-- 将非可视元素（例如服务、值对象）放在此处 -->
+    </fx:Declarations>
+
+    <fx:Script>
 		<![CDATA[
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
-			import com.izerui.event.GetHashValueEvent;
-			import com.izerui.event.GetListValueEvent;
-			import com.izerui.event.GetZSetValueEvent;
-			import com.izerui.support.GlobUtils;
-			import com.izerui.vo.Key;
-			
-			import mx.collections.ArrayCollection;
-			import mx.collections.ArrayList;
-			import mx.core.FlexGlobals;
-			
-			private var _key:Key ;
-			
-			public var updateGridItem:Function;
-			
-			
-			[Bindable]
-			public function get key():Key
-			{
-				return _key;
-			}
-			
-			public function set key(value:Key):void
-			{
-				_key = value;
-				getValue();
-			}
-			
-			private function getValue():void{
-				if(key.type!="zset"){
-					return;
-				}
-				CairngormEventDispatcher.getInstance().dispatchEvent(new GetZSetValueEvent(
-					FlexGlobals.topLevelApplication.server,
-					key.name,
-					function(data:ArrayCollection):void{
-						zSetData.dataProvider = data;
-					}
-				));
-			}
-			
-			
-		]]>
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.GetHashValueEvent;
+        import com.izerui.event.GetListValueEvent;
+        import com.izerui.event.GetZSetValueEvent;
+        import com.izerui.event.SetZSetValueEvent;
+        import com.izerui.support.GlobUtils;
+        import com.izerui.vo.Key;
+
+        import mx.collections.ArrayCollection;
+        import mx.collections.ArrayList;
+        import mx.controls.Alert;
+        import mx.core.FlexGlobals;
+        import mx.events.DragEvent;
+
+        private var _key:Key;
+
+        public var updateGridItem:Function;
+
+
+        [Bindable]
+        public function get key():Key {
+            return _key;
+        }
+
+        public function set key(value:Key):void {
+            _key = value;
+            getValue();
+        }
+
+        private function getValue():void {
+            if (key.type != "zset") {
+                return;
+            }
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetZSetValueEvent(
+                    FlexGlobals.topLevelApplication.server,
+                    key.name,
+                    function (data:ArrayCollection):void {
+                        zSetData.dataProvider = data;
+                    }
+            ));
+        }
+
+
+        private function button1_clickHandler(event:MouseEvent):void {
+            var dataList:ArrayCollection = (zSetData.dataProvider as ArrayCollection);
+            dataList.addItem({"score": 0,"element":"null"});
+            zSetData.selectedIndex = dataList.length;
+            zSetData.scrollToIndex(zSetData.selectedIndex);
+        }
+
+        private function button2_clickHandler(event:MouseEvent):void {
+            if (zSetData.selectedIndex == -1) {
+                return;
+            }
+            var dataList:ArrayCollection = (zSetData.dataProvider as ArrayCollection);
+            dataList.removeItemAt(zSetData.selectedIndex);
+            dataList.refresh();
+        }
+
+        private function button3_clickHandler(event:MouseEvent):void {
+            if (!zSetData.dataProvider || !zSetData.dataProvider.length) {
+                Alert.show("请添加值", "提示");
+                return;
+            }
+            CairngormEventDispatcher.getInstance().dispatchEvent(new SetZSetValueEvent(
+                    FlexGlobals.topLevelApplication.server,
+                    key.name,
+                    zSetData.dataProvider,
+                    function ():void {
+                        Alert.show("保存成功", "提示");
+                        updateGridItem.call(null);
+                        getValue();
+                    }
+            ));
+        }
+
+        ]]>
 	</fx:Script>
-	
-	<mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
-		<s:FormItem width="100%" label="键  (key):" >
-			<s:HGroup  width="100%" >
-				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
-				<s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
-			</s:HGroup>
-		</s:FormItem>
-		<s:FormItem width="100%" label="集合(值):">
-			<s:HGroup width="100%">
-				
-				<s:List id="zSetData" width="100%" height="200">
-					
-				</s:List>
-				<s:VGroup>
-					<s:Button label="添加" icon="@Embed('/images/add.png')"/>
-					<s:Button label="删除" icon="@Embed('/images/delete.png')"/>
-					<s:Button label="应用" icon="@Embed('/images/accept.png')"/>
-					<s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
-				</s:VGroup>
-			</s:HGroup>
-		</s:FormItem>
-	</mx:Form>
-	
-	
+
+    <mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
+        <s:FormItem width="100%" label="键  (key):">
+            <s:HGroup width="100%">
+                <s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
+                <s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
+            </s:HGroup>
+        </s:FormItem>
+        <s:FormItem width="100%" label="集合(值):">
+            <s:HGroup width="100%">
+
+                <mx:DataGrid id="zSetData" width="100%" height="200" editable="true">
+                    <mx:columns>
+                        <mx:DataGridColumn dataField="score" headerText="分值"/>
+                        <mx:DataGridColumn dataField="element" headerText="成员"/>
+                    </mx:columns>
+                </mx:DataGrid>
+                <s:VGroup>
+                    <s:Button label="添加" icon="@Embed('/images/add.png')" click="button1_clickHandler(event)"/>
+                    <s:Button label="删除" icon="@Embed('/images/delete.png')" click="button2_clickHandler(event)"/>
+                    <s:Button label="应用" icon="@Embed('/images/accept.png')" click="button3_clickHandler(event)"/>
+                    <s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
+                </s:VGroup>
+            </s:HGroup>
+        </s:FormItem>
+    </mx:Form>
+
+
 </s:VGroup>

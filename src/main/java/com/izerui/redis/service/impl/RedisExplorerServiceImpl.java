@@ -18,6 +18,7 @@ import com.izerui.redis.command.set.UpdateSet;
 import com.izerui.redis.command.string.ReadString;
 import com.izerui.redis.command.string.UpdateString;
 import com.izerui.redis.command.zset.AllZSet;
+import com.izerui.redis.command.zset.UpdateZSet;
 import com.izerui.redis.dto.Key;
 import com.izerui.redis.entity.RedisServerConfig;
 import com.izerui.redis.repository.ServerConfigRepository;
@@ -88,27 +89,27 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
-    public List<Map<String, String>> getHashValue(RedisServerConfig redisServerConfig, String key) {
-        Map<String, String> map = new JedisExecutor(redisServerConfig).execute(new ReadHash(key)).getValue();
-        return MapListUtils.map2KvLists(map);
+    public List<Map> getHashValue(RedisServerConfig redisServerConfig, String key) {
+        Map map = new JedisExecutor(redisServerConfig).execute(new ReadHash(key)).getValue();
+        return MapListUtils.map2KvLists(map,"key","value");
     }
 
     @Override
-    public void saveHashValue(RedisServerConfig redisServerConfig, String key, List<Map<String, String>> mapList) {
+    public void saveHashValue(RedisServerConfig redisServerConfig, String key, List<Map> mapList) {
         JedisExecutor executor = new JedisExecutor(redisServerConfig);
         //delete key
         executor.execute(new Delete(key));
         //add hash
-        executor.execute(new AddHash(key,MapListUtils.kvList2Map(mapList)));
+        executor.execute(new AddHash(key,MapListUtils.kvList2Map(mapList,"key","value")));
     }
 
     @Override
-    public List<Map<String, String>> getListValue(RedisServerConfig redisServerConfig, String key) {
+    public List<Map> getListValue(RedisServerConfig redisServerConfig, String key) {
         List<String> values = new JedisExecutor(redisServerConfig).execute(new AllList(key)).getValues();
-        return Lists.transform(values, new Function<String, Map<String,String>>() {
+        return Lists.transform(values, new Function<String, Map>() {
             @Override
-            public Map<String, String> apply(String s) {
-                Map<String,String> map = new HashMap<String, String>();
+            public Map apply(String s) {
+                Map<String,String> map = new HashMap();
                 map.put("label",s);
                 return map;
             }
@@ -116,23 +117,23 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
-    public void setListValue(RedisServerConfig redisServerConfig, String key, List<Map<String, String>> values) {
-        List<String> newValues = Lists.transform(values, new Function<Map<String, String>, String>() {
+    public void setListValue(RedisServerConfig redisServerConfig, String key, List<Map> values) {
+        List<String> newValues = Lists.transform(values, new Function<Map, String>() {
             @Override
-            public String apply(Map<String, String> stringStringMap) {
-                return stringStringMap.get("label");
+            public String apply(Map stringStringMap) {
+                return String.valueOf(stringStringMap.get("label"));
             }
         });
         new JedisExecutor(redisServerConfig).execute(new UpdateList(key, newValues));
     }
 
     @Override
-    public Set<Map<String, String>> getSetValue(RedisServerConfig redisServerConfig, String key) {
+    public Set<Map> getSetValue(RedisServerConfig redisServerConfig, String key) {
         Set<String> values = new JedisExecutor(redisServerConfig).execute(new AllSet(key)).getValues();
-        Iterable<Map<String, String>> iterable = Iterables.transform(values, new Function<String, Map<String, String>>() {
+        Iterable<Map> iterable = Iterables.transform(values, new Function<String, Map>() {
             @Override
-            public Map<String, String> apply(String s) {
-                Map<String, String> map = new HashMap<String, String>();
+            public Map apply(String s) {
+                Map map = new HashMap();
                 map.put("label", s);
                 return map;
             }
@@ -141,11 +142,11 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
-    public void setSetValue(RedisServerConfig redisServerConfig, String key, Set<Map<String, String>> values) {
-        Iterable<String> iterable = Iterables.transform(values, new Function<Map<String, String>, String>() {
+    public void setSetValue(RedisServerConfig redisServerConfig, String key, Set<Map> values) {
+        Iterable<String> iterable = Iterables.transform(values, new Function<Map, String>() {
             @Override
-            public String apply(Map<String, String> stringStringMap) {
-                return stringStringMap.get("label");
+            public String apply(Map stringStringMap) {
+                return String.valueOf(stringStringMap.get("label"));
             }
         });
 
@@ -154,15 +155,24 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
-    public List<String> getZSetValue(RedisServerConfig redisServerConfig, String key) {
+    public List<Map> getZSetValue(RedisServerConfig redisServerConfig, String key) {
         Set<Tuple> values = new JedisExecutor(redisServerConfig).execute(new AllZSet(key)).getValues();
-        Iterable<String> transform = Iterables.transform(values, new Function<Tuple, String>() {
+        Iterable<Map> iterable = Iterables.transform(values, new Function<Tuple, Map>() {
             @Override
-            public String apply(Tuple tuple) {
-                return tuple.getScore()+" , "+tuple.getElement();
+            public Map<String, Object> apply(Tuple tuple) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("score", tuple.getScore());
+                map.put("element", tuple.getElement());
+                return map;
             }
         });
-        return Lists.newArrayList(transform);
+        return Lists.newArrayList(iterable);
+    }
+
+    @Override
+    public void setZSetValue(RedisServerConfig redisServerConfig, String key, List<Map> values) {
+        Map map = MapListUtils.kvList2Map(values, "element", "score");
+        new JedisExecutor(redisServerConfig).execute(new UpdateZSet(key,map));
     }
 
     @Override

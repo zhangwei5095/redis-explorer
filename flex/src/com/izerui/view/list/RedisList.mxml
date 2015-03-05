@@ -112,7 +112,7 @@
                              dragStart="listData_dragStartHandler(event)"
                              dragComplete="listData_dragCompleteHandler(event)">
                     <mx:columns>
-                        <mx:DataGridColumn dataField="label" headerText="值" sortable="false"/>
+                        <mx:DataGridColumn dataField="label" headerText="值"/>
                     </mx:columns>
                 </mx:DataGrid>
                 <s:VGroup>

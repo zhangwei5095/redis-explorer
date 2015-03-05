@@ -9,28 +9,28 @@ import java.util.*;
  */
 public class MapListUtils {
 
-    public static List<Map<String,String>> map2KvLists(Map<String, String> map){
+    public static List<Map> map2KvLists(Map map,String keyName,String valueName){
         Set<String> strings = map.keySet();
         String[] keys = strings.toArray(new String[strings.size()]);
         Arrays.sort(keys);
 
-        List<Map<String,String>> mapList = new ArrayList<Map<String, String>>();
+        List<Map> mapList = new ArrayList<Map>();
         for (String key : keys){
-            Map<String,String> obj = new HashMap<String, String>();
-            obj.put("key", key);
-            obj.put("value",map.get(key));
+            Map obj = new HashMap();
+            obj.put(keyName, key);
+            obj.put(valueName,map.get(key));
             mapList.add(obj);
         }
         return mapList;
     }
 
-    public static Map<String,String> kvList2Map(List<Map<String,String>> list){
-        Map<String,String> resultMap = new HashMap<String, String>();
-        for(Map<String,String> map:list){
-            if(!map.containsKey("key")||!map.containsKey("value")){
-                throw new RedisException("list对象不包含 key 或者 value 属性");
+    public static Map kvList2Map(List<Map> list,String keyName,String valueName){
+        Map resultMap = new HashMap();
+        for(Map map:list){
+            if(!map.containsKey(keyName)||!map.containsKey(valueName)){
+                throw new RedisException("list对象不包含 "+keyName+" 或者 "+valueName+" 属性");
             }
-            resultMap.put(map.get("key"),map.get("value"));
+            resultMap.put(map.get(keyName),map.get(valueName));
         }
         return resultMap;
     }
