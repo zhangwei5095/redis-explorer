@@ -3,6 +3,7 @@ package com.izerui.redis.service.impl;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.izerui.redis.command.JedisExecutor;
 import com.izerui.redis.command.hash.AddHash;
 import com.izerui.redis.command.hash.ReadHash;
@@ -11,7 +12,9 @@ import com.izerui.redis.command.list.AllList;
 import com.izerui.redis.command.list.SetValue;
 import com.izerui.redis.command.list.UpdateList;
 import com.izerui.redis.command.server.DbAmount;
+import com.izerui.redis.command.set.AddSet;
 import com.izerui.redis.command.set.AllSet;
+import com.izerui.redis.command.set.UpdateSet;
 import com.izerui.redis.command.string.ReadString;
 import com.izerui.redis.command.string.UpdateString;
 import com.izerui.redis.command.zset.AllZSet;
@@ -124,8 +127,30 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     }
 
     @Override
-    public Set<String> getSetValue(RedisServerConfig redisServerConfig, String key) {
-        return new JedisExecutor(redisServerConfig).execute(new AllSet(key)).getValues();
+    public Set<Map<String, String>> getSetValue(RedisServerConfig redisServerConfig, String key) {
+        Set<String> values = new JedisExecutor(redisServerConfig).execute(new AllSet(key)).getValues();
+        Iterable<Map<String, String>> iterable = Iterables.transform(values, new Function<String, Map<String, String>>() {
+            @Override
+            public Map<String, String> apply(String s) {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("label", s);
+                return map;
+            }
+        });
+        return Sets.newHashSet(iterable);
+    }
+
+    @Override
+    public void setSetValue(RedisServerConfig redisServerConfig, String key, Set<Map<String, String>> values) {
+        Iterable<String> iterable = Iterables.transform(values, new Function<Map<String, String>, String>() {
+            @Override
+            public String apply(Map<String, String> stringStringMap) {
+                return stringStringMap.get("label");
+            }
+        });
+
+        HashSet<String> hashSet = Sets.newHashSet(iterable);
+        new JedisExecutor(redisServerConfig).execute(new UpdateSet(key, hashSet.toArray(new String[hashSet.size()])));
     }
 
     @Override

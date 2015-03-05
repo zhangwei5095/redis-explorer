@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
-		  xmlns:s="library://ns.adobe.com/flex/spark"
-		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  width="622" height="382">
-	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-	</fx:Declarations>
-	
-	<fx:Script>
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          width="622" height="382">
+    <fx:Declarations>
+        <!-- 将非可视元素（例如服务、值对象）放在此处 -->
+    </fx:Declarations>
+
+    <fx:Script>
 		<![CDATA[
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
         import com.izerui.event.GetListValueEvent;
@@ -90,39 +90,40 @@
         protected function listData_dragCompleteHandler(event:DragEvent):void {
             listData.editable = true;
         }
+
         ]]>
 	</fx:Script>
-	
-	<mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
-		<s:FormItem width="100%" label="键  (key):" >
-			<s:HGroup  width="100%" >
-				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
-				<s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
-			</s:HGroup>
-		</s:FormItem>
-		<s:FormItem width="100%" label="列表(值):">
-			<s:HGroup width="100%">
-				
-				<mx:DataGrid id="listData" width="100%" height="200" editable="true" 
-							 dropEnabled="true" 
-							 dragEnabled="true" 
-							 toolTip="拖动可以排序"
-							 dragMoveEnabled="true"
-							 dragStart="listData_dragStartHandler(event)"
-							 dragComplete="listData_dragCompleteHandler(event)">
-					<mx:columns>
-						<mx:DataGridColumn dataField="label" headerText="值" sortable="false"/>
-					</mx:columns>
-				</mx:DataGrid>
-				<s:VGroup>
-					<s:Button label="添加" icon="@Embed('/images/add.png')" click="button1_clickHandler(event)"/>
-					<s:Button label="删除" icon="@Embed('/images/delete.png')" click="button2_clickHandler(event)"/>
-					<s:Button label="应用" icon="@Embed('/images/accept.png')" click="button3_clickHandler(event)"/>
-					<s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
-				</s:VGroup>
-			</s:HGroup>
-		</s:FormItem>
-	</mx:Form>
-	
-	
+
+    <mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
+        <s:FormItem width="100%" label="键  (key):">
+            <s:HGroup width="100%">
+                <s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
+                <s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
+            </s:HGroup>
+        </s:FormItem>
+        <s:FormItem width="100%" label="列表(值):">
+            <s:HGroup width="100%">
+
+                <mx:DataGrid id="listData" width="100%" height="200" editable="true"
+                             dropEnabled="true"
+                             dragEnabled="true"
+                             toolTip="拖动可以排序"
+                             dragMoveEnabled="true"
+                             dragStart="listData_dragStartHandler(event)"
+                             dragComplete="listData_dragCompleteHandler(event)">
+                    <mx:columns>
+                        <mx:DataGridColumn dataField="label" headerText="值" sortable="false"/>
+                    </mx:columns>
+                </mx:DataGrid>
+                <s:VGroup>
+                    <s:Button label="添加" icon="@Embed('/images/add.png')" click="button1_clickHandler(event)"/>
+                    <s:Button label="删除" icon="@Embed('/images/delete.png')" click="button2_clickHandler(event)"/>
+                    <s:Button label="应用" icon="@Embed('/images/accept.png')" click="button3_clickHandler(event)"/>
+                    <s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
+                </s:VGroup>
+            </s:HGroup>
+        </s:FormItem>
+    </mx:Form>
+
+
 </s:VGroup>

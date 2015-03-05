@@ -25,7 +25,8 @@ public interface RedisExplorerService{
     void saveHashValue(RedisServerConfig redisServerConfig,String key,List<Map<String, String>> mapList);
     List<Map<String, String>> getListValue(RedisServerConfig redisServerConfig,String key);
     void setListValue(RedisServerConfig redisServerConfig,String key,List<Map<String, String>> values);
-    Set<String> getSetValue(RedisServerConfig redisServerConfig,String key);
+    Set<Map<String, String>> getSetValue(RedisServerConfig redisServerConfig,String key);
+    void setSetValue(RedisServerConfig redisServerConfig,String key,Set<Map<String,String>> values);
     List<String> getZSetValue(RedisServerConfig redisServerConfig, String key);
     Long getIdletime(RedisServerConfig redisServerConfig, String key);
     Long getTTLs(RedisServerConfig redisServerConfig, String key);

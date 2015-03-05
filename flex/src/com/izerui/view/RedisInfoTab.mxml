@@ -118,8 +118,8 @@
 		<string:RedisString key="{key}" width="100%" height="100%" includeIn="string" updateGridItem="updateGridItem"/>
 		<hash:RedisHash key="{key}" width="100%" height="100%" includeIn="hash" updateGridItem="updateGridItem"/>
 		<list:RedisList key="{key}" height="100%" width="100%" includeIn="list" updateGridItem="updateGridItem"/>
-		<sets:RedisSet key="{key}" height="100%" width="100%" includeIn="set"/>
-		<zset:RedisZSet key="{key}" height="100%" width="100%" includeIn="zset"/>
+		<sets:RedisSet key="{key}" height="100%" width="100%" includeIn="set" updateGridItem="updateGridItem"/>
+		<zset:RedisZSet key="{key}" height="100%" width="100%" includeIn="zset" updateGridItem="updateGridItem"/>
 	</s:NavigatorContent>
 	
 	<s:NavigatorContent width="100%" height="100%" label="生存时间">
