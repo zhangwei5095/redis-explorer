@@ -4,6 +4,7 @@
                xmlns:mx="library://ns.adobe.com/flex/mx"
                xmlns:local="*"
                xmlns:view="com.izerui.view.*"
+               pageTitle="redis-explorer"
                minWidth="955" minHeight="600">
     <s:layout>
         <s:VerticalLayout paddingBottom="6"/>
@@ -18,6 +19,9 @@
             fontSize: 12;
         }
     </fx:Style>
+    <fx:Metadata>
+        [ResourceBundle("redis")]
+    </fx:Metadata>
     <fx:Declarations>
         <local:Services/>
         <local:Controller/>
@@ -52,9 +56,6 @@
 
         [Embed("/images/list.png")]
         public const listImg:Class;
-
-        [Embed("/images/lang.png")]
-        public const langImg:Class;
 
         [Embed("/images/about.png")]
         public const aboutImg:Class;
@@ -122,6 +123,16 @@
         protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
             redisTree.loadTreeData();
         }
+
+        private function language_clickHandler(event:MouseEvent):void {
+            if(resourceManager.localeChain[0]=="zh_CN"){
+                resourceManager.localeChain = ["en_US"];
+                i18nButton.label = "中文";
+            }else if(resourceManager.localeChain[0]=="en_US"){
+                resourceManager.localeChain = ["zh_CN"];
+                i18nButton.label = "ENGLISH";
+            }
+        }
         ]]>
 	</fx:Script>
 
@@ -158,10 +169,6 @@
                             <item label="导入"/>
                             <item label="导出"/>
                         </menu>
-                        <menu label="语言" icon="langImg">
-                            <item label="English"/>
-                            <item label="中文" type="check" toggled="true"/>
-                        </menu>
                         <menu label="帮助" icon="aboutImg">
                             <item label="关于"/>
                         </menu>
@@ -170,11 +177,12 @@
             </mx:dataProvider>
         </mx:MenuBar>
         <s:Spacer width="100%"/>
+        <mx:Button id="i18nButton" label="ENGLISH" click="language_clickHandler(event)" icon="@Embed('/images/lang.png')"/>
     </s:controlBarContent>
 
     <mx:HDividedBox width="100%" height="100%">
         <mx:TabNavigator width="200" height="100%">
-            <s:NavigatorContent label="服务器列表" icon="@Embed('/images/redis16.png')" width="100%" height="100%">
+            <s:NavigatorContent label="{resourceManager.getString('redis','servers')}" icon="@Embed('/images/redis16.png')" width="100%" height="100%">
                 <view:RedisTree width="100%" height="100%" id="redisTree"
                                 dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)" />
             </s:NavigatorContent>
@@ -182,7 +190,7 @@
 
 
         <mx:TabNavigator width="100%" height="100%">
-            <s:NavigatorContent label="redis数据浏览器" icon="@Embed('/images/list.png')" width="100%" height="100%">
+            <s:NavigatorContent label="{resourceManager.getString('redis','explorer')}" icon="@Embed('/images/list.png')" width="100%" height="100%">
                 <view:RedisMain id="mainGrid" width="100%" height="100%">
 
                 </view:RedisMain>
