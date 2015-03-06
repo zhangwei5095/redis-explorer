@@ -6,7 +6,7 @@
 			   xmlns:view="com.izerui.view.*"
 			   minWidth="955" minHeight="600">
 	<s:layout>
-		<s:VerticalLayout paddingBottom="6" paddingLeft="6" paddingRight="6"/>
+		<s:VerticalLayout paddingBottom="6"/>
 	</s:layout>
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -34,6 +34,9 @@
 		[Bindable]
 		public var server:RedisServerConfig;
 		
+		[Bindable]
+		public var aboutMe:String = "Copyright © 2014-2015 power by serv";
+		
 		private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void{
 			server = event.selItem;
 			CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeysEvent(event.selItem,function(data:ArrayCollection):void{
@@ -45,9 +48,43 @@
 	]]>
 	</fx:Script>
 	
-	<s:Group width="100%" height="80">
-		<mx:Image source="@Embed(source='images/redis-logo-small.png')"></mx:Image>
-	</s:Group>
+	<s:controlBarContent>
+		<mx:MenuBar id="mBar"
+					labelField="@label">
+			<mx:dataProvider>
+				<s:XMLListCollection>
+					<fx:XMLList xmlns="">
+						<menu label="File...">
+							<item label="New" />
+							<item label="Open" />
+							<item label="Save" />
+							<item label="Save As" />
+							<fake type="separator" />
+							<item label="Exit" />
+						</menu>
+						<menu label="Edit...">
+							<item label="Cut" />
+							<item label="Copy" />
+							<item label="Paste" />
+							<fake type="separator" />
+							<item label="Undo" />
+							<item label="Redo" />
+							<fake type="separator" />
+							<item label="radio button" type="radio" toggled="true" />
+							<item label="check box" type="check" toggled="true" />
+						</menu>
+						<menu label="Help" />
+					</fx:XMLList>
+				</s:XMLListCollection>
+			</mx:dataProvider>
+		</mx:MenuBar>
+		<s:Spacer width="100%"/>
+		<mx:PopUpButton icon="@Embed('/images/about.png')" label="关于" openAlways="true" openDuration="250">
+			<mx:popUp>
+				<view:AboutUS/>
+			</mx:popUp>
+		</mx:PopUpButton>
+	</s:controlBarContent>
 	
 	<mx:HDividedBox width="100%" height="100%">
 		<view:RedisTree width="200" height="100%"
@@ -62,7 +99,7 @@
 
 	</mx:HDividedBox>
 	<s:HGroup width="100%"  horizontalAlign="center">
-		<s:Label text="Copyright © 2014-2015 power by 刘玉华"/>
+		<s:Label text="{aboutMe}"/>
 	</s:HGroup>
 	
 </s:Application>

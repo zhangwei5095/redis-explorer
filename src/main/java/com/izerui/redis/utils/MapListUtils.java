@@ -34,4 +34,14 @@ public class MapListUtils {
         }
         return resultMap;
     }
+    public static Map<String,Double> zSetList2Map(List<Map> list,String keyName,String valueName){
+        Map resultMap = new HashMap();
+        for(Map map:list){
+            if(!map.containsKey(keyName)||!map.containsKey(valueName)){
+                throw new RedisException("list对象不包含 "+keyName+" 或者 "+valueName+" 属性");
+            }
+            resultMap.put(map.get(keyName),Double.valueOf(map.get(valueName).toString()));
+        }
+        return resultMap;
+    }
 }

@@ -5,6 +5,7 @@
 			    close="titlewindow1_closeHandler(event)"
 			   title.add="添加服务器"
 			   title.edit="修改服务器"
+			   fontWeight="bold"
 			   width="380" height="314">
 	<s:layout>
 		<s:VerticalLayout/>

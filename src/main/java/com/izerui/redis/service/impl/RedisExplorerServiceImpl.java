@@ -171,7 +171,7 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
 
     @Override
     public void setZSetValue(RedisServerConfig redisServerConfig, String key, List<Map> values) {
-        Map map = MapListUtils.kvList2Map(values, "element", "score");
+        Map map = MapListUtils.zSetList2Map(values, "element", "score");
         new JedisExecutor(redisServerConfig).execute(new UpdateZSet(key,map));
     }
 

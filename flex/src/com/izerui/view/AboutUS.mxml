@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="562"
+		  height="342"
+		  title="关于">
+	<fx:Script>
+		<![CDATA[
+			import flash.net.navigateToURL;
+			
+			import mx.core.FlexGlobals;
+			
+			protected function linkbutton1_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest("https://github.com/izerui/redis-explorer"));
+			}
+			
+			protected function linkbutton2_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest("http://izerui.com"));
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:controlBarContent>
+		<s:Label text="{FlexGlobals.topLevelApplication.aboutMe}"/>
+	</s:controlBarContent>
+	<s:Image x="29" y="21" source="@Embed('/images/redis-logo-small.png')"/>
+	<mx:HRule x="29" y="216" width="489" height="3"/>
+	<mx:LinkButton x="263" y="227" icon="@Embed('/images/git.png')" label="GitHub!" click="linkbutton1_clickHandler(event)"/>
+	<mx:LinkButton x="376" y="227" icon="@Embed('/images/homepage.png')" label="Home Page!" click="linkbutton2_clickHandler(event)"/>
+	<s:Form x="127" y="102" width="346" height="106">
+		<s:FormItem label="Developed by :">
+			<s:Label text="泽睿的自言自语"/>
+		</s:FormItem>
+		<s:FormItem label="Version :">
+			<s:Label text="1.0"/>
+		</s:FormItem>
+	</s:Form>
+	
+</s:Panel>
