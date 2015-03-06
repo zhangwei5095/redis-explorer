@@ -4,14 +4,18 @@
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  width="562"
 		  height="342"
+          addedEffect="{fadeIn}"
+          removedEffect="{fadeOut}"
+          mouseDownOutside="PopUpManager.removePopUp(this);"
 		  title="关于">
 	<fx:Script>
 		<![CDATA[
 			import flash.net.navigateToURL;
 			
 			import mx.core.FlexGlobals;
-			
-			protected function linkbutton1_clickHandler(event:MouseEvent):void
+            import mx.managers.PopUpManager;
+
+            protected function linkbutton1_clickHandler(event:MouseEvent):void
 			{
 				navigateToURL(new URLRequest("https://github.com/izerui/redis-explorer"));
 			}
@@ -25,6 +29,19 @@
 	</fx:Script>
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+        <!--<s:Fade id="fadeOut" duration="500" alphaFrom="1.0" alphaTo="0.0"/>-->
+        <!--<s:Fade id="fadeIn" duration="500" alphaFrom="0.0" alphaTo="1.0"/>-->
+        <s:Parallel id="fadeOut" target="{this}" suspendBackgroundProcessing="false">
+            <s:Scale3D scaleYTo="0" duration="500" startDelay="0" disableLayout="false"
+                       autoCenterProjection="true" autoCenterTransform="true" applyChangesPostLayout="true"/>
+            <s:Fade alphaFrom="1" alphaTo="0" duration="250" startDelay="50"/>
+        </s:Parallel>
+
+        <s:Parallel id="fadeIn" target="{this}" suspendBackgroundProcessing="false">
+            <s:Scale3D scaleYFrom="0" scaleYTo="1" duration="250" disableLayout="false"
+                       autoCenterProjection="true" autoCenterTransform="true" applyChangesPostLayout="true"/>
+            <s:Fade alphaFrom="0" alphaTo="1" duration="200"/>
+        </s:Parallel>
 	</fx:Declarations>
 	<s:controlBarContent>
 		<s:Label text="{FlexGlobals.topLevelApplication.aboutMe}"/>

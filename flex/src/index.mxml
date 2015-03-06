@@ -1,105 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
-			   xmlns:s="library://ns.adobe.com/flex/spark"
-			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   xmlns:local="*"
-			   xmlns:view="com.izerui.view.*"
-			   minWidth="955" minHeight="600">
-	<s:layout>
-		<s:VerticalLayout paddingBottom="6"/>
-	</s:layout>
-	<fx:Style>
-		@namespace s "library://ns.adobe.com/flex/spark";
-		@namespace mx "library://ns.adobe.com/flex/mx";
-		@namespace local "*";
-		@namespace view "com.izerui.view.*";
-		s|Application{
-			fontSize:12;
-		}
-	</fx:Style>
-	<fx:Declarations>
-		<local:Services/>
-		<local:Controller/>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-	</fx:Declarations>
-	
-	<fx:Script><![CDATA[
-		import com.adobe.cairngorm.control.CairngormEventDispatcher;
-		import com.izerui.event.GetKeysEvent;
-		import com.izerui.support.event.DbItemSelectEvent;
-		import com.izerui.vo.RedisServerConfig;
-		
-		import mx.collections.ArrayCollection;
-		
-		[Bindable]
-		public var server:RedisServerConfig;
-		
-		[Bindable]
-		public var aboutMe:String = "Copyright © 2014-2015 power by serv";
-		
-		private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void{
-			server = event.selItem;
-			CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeysEvent(event.selItem,function(data:ArrayCollection):void{
-				mainGrid.currentState = "listState";
-				mainGrid.keyList= data;
-			}));
-			
-		}
-	]]>
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+               xmlns:local="*"
+               xmlns:view="com.izerui.view.*"
+               minWidth="955" minHeight="600">
+    <s:layout>
+        <s:VerticalLayout paddingBottom="6"/>
+    </s:layout>
+    <fx:Style>
+        @namespace s "library://ns.adobe.com/flex/spark";
+        @namespace mx "library://ns.adobe.com/flex/mx";
+        @namespace local "*";
+        @namespace view "com.izerui.view.*";
+
+        s|Application {
+            fontSize: 12;
+        }
+    </fx:Style>
+    <fx:Declarations>
+        <local:Services/>
+        <local:Controller/>
+        <!-- 将非可视元素（例如服务、值对象）放在此处 -->
+    </fx:Declarations>
+
+    <fx:Script><![CDATA[
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.GetKeysEvent;
+        import com.izerui.event.RemoveServerConfigEvent;
+        import com.izerui.support.AlertUtils;
+        import com.izerui.support.PopUtils;
+        import com.izerui.support.event.DbItemSelectEvent;
+        import com.izerui.support.event.RedisServerUpdateEvent;
+        import com.izerui.view.AboutUS;
+        import com.izerui.view.ServerConfigDialog;
+        import com.izerui.vo.RedisServerConfig;
+
+        import mx.collections.ArrayCollection;
+        import mx.core.FlexGlobals;
+        import mx.events.MenuEvent;
+        import mx.utils.ObjectUtil;
+
+        [Bindable]
+        public var server:RedisServerConfig;
+
+        [Bindable]
+        public var aboutMe:String = "Copyright © 2014-2015 power by serv";
+
+        [Embed("/images/redis16.png")]
+        public const serverImg:Class;
+
+        [Embed("/images/list.png")]
+        public const listImg:Class;
+
+        [Embed("/images/lang.png")]
+        public const langImg:Class;
+
+        [Embed("/images/about.png")]
+        public const aboutImg:Class;
+
+        private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void {
+            server = event.selItem;
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeysEvent(event.selItem, function (data:ArrayCollection):void {
+                mainGrid.currentState = "listState";
+                mainGrid.keyList = data;
+            }));
+
+        }
+
+        private function mBar_itemClickHandler(event:MenuEvent):void {
+            switch (event.label){
+                case "关于":
+                    PopUtils.popUp(new AboutUS(),false);
+                    break;
+                case "添加":
+                {
+                    openServerConfigDialog("add", redisServerUpdateListener);
+                    break;
+                }
+                case "修改":
+                {
+                    if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
+                        return;
+                    }
+                    openServerConfigDialog("edit", redisServerUpdateListener,RedisServerConfig(ObjectUtil.clone(redisTree.selectedItem)));
+                    break;
+                }
+                case "移除":
+                {
+                    if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
+                        return;
+                    }
+                    AlertUtils.confirm("确认删除么?", "删除", FlexGlobals.topLevelApplication, function ():void {
+
+                        CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(redisTree.selectedItem), function ():void {
+                            redisTree.loadTreeData();
+                        }));
+
+                    });
+
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+        }
+
+        private function openServerConfigDialog(sateName:String,listener:Function,item:RedisServerConfig=null):void{
+            var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
+            if(item){
+                serverConfigDialog.item = item;
+            }
+            serverConfigDialog.currentState = sateName;
+            serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, listener);
+            PopUtils.popUp(serverConfigDialog);
+        }
+
+        protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
+            redisTree.loadTreeData();
+        }
+        ]]>
 	</fx:Script>
-	
-	<s:controlBarContent>
-		<mx:MenuBar id="mBar"
-					labelField="@label">
-			<mx:dataProvider>
-				<s:XMLListCollection>
-					<fx:XMLList xmlns="">
-						<menu label="File...">
-							<item label="New" />
-							<item label="Open" />
-							<item label="Save" />
-							<item label="Save As" />
-							<fake type="separator" />
-							<item label="Exit" />
-						</menu>
-						<menu label="Edit...">
-							<item label="Cut" />
-							<item label="Copy" />
-							<item label="Paste" />
-							<fake type="separator" />
-							<item label="Undo" />
-							<item label="Redo" />
-							<fake type="separator" />
-							<item label="radio button" type="radio" toggled="true" />
-							<item label="check box" type="check" toggled="true" />
-						</menu>
-						<menu label="Help" />
-					</fx:XMLList>
-				</s:XMLListCollection>
-			</mx:dataProvider>
-		</mx:MenuBar>
-		<s:Spacer width="100%"/>
-		<mx:PopUpButton icon="@Embed('/images/about.png')" label="关于" openAlways="true" openDuration="250">
-			<mx:popUp>
-				<view:AboutUS/>
-			</mx:popUp>
-		</mx:PopUpButton>
-	</s:controlBarContent>
-	
-	<mx:HDividedBox width="100%" height="100%">
-		<view:RedisTree width="200" height="100%"
-						dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)"/>
-		
 
-			<s:Panel width="100%" height="100%" title="redis数据浏览器">
-					<view:RedisMain id="mainGrid" width="100%" height="100%">
-						
-					</view:RedisMain>
-			</s:Panel>
+    <s:controlBarContent>
+        <mx:Image source="@Embed('/images/redis.png')"/>
+        <mx:Label text="redis-explorer" fontSize="32" fontWeight="bold"/>
+        <mx:Spacer width="30"/>
+        <mx:MenuBar id="mBar" height="32" iconField="@icon" itemClick="mBar_itemClickHandler(event)"
+                    labelField="@label">
+            <mx:dataProvider>
+                <s:XMLListCollection>
+                    <fx:XMLList>
+                        <menu label="服务器" icon="serverImg">
+                            <item label="添加"/>
+                            <item label="修改"/>
+                            <item label="移除"/>
+                        </menu>
+                        <menu label="数据" icon="listImg">
+                            <item label="新建">
+                                <item label="字符串"/>
+                                <item label="列表"/>
+                                <item label="集合"/>
+                                <item label="有序集合"/>
+                                <item label="哈希表"/>
+                            </item>
+                            <item label="重命名"/>
+                            <item label="删除"/>
+                            <item label="属性"/>
+                            <item type="separator"/>
+                            <item label="剪切 Ctrl+x"/>
+                            <item label="拷贝 Ctrl+c"/>
+                            <item label="粘贴 Ctrl+v"/>
+                            <item type="separator"/>
+                            <item label="导入"/>
+                            <item label="导出"/>
+                        </menu>
+                        <menu label="语言" icon="langImg">
+                            <item label="English"/>
+                            <item label="中文" type="check" toggled="true"/>
+                        </menu>
+                        <menu label="帮助" icon="aboutImg">
+                            <item label="关于"/>
+                        </menu>
+                    </fx:XMLList>
+                </s:XMLListCollection>
+            </mx:dataProvider>
+        </mx:MenuBar>
+        <s:Spacer width="100%"/>
+    </s:controlBarContent>
 
-	</mx:HDividedBox>
-	<s:HGroup width="100%"  horizontalAlign="center">
-		<s:Label text="{aboutMe}"/>
-	</s:HGroup>
-	
+    <mx:HDividedBox width="100%" height="100%">
+        <mx:TabNavigator width="200" height="100%">
+            <s:NavigatorContent label="服务器列表" icon="@Embed('/images/redis16.png')" width="100%" height="100%">
+                <view:RedisTree width="100%" height="100%" id="redisTree"
+                                dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)" />
+            </s:NavigatorContent>
+        </mx:TabNavigator>
+
+
+        <mx:TabNavigator width="100%" height="100%">
+            <s:NavigatorContent label="redis数据浏览器" icon="@Embed('/images/list.png')" width="100%" height="100%">
+                <view:RedisMain id="mainGrid" width="100%" height="100%">
+
+                </view:RedisMain>
+            </s:NavigatorContent>
+        </mx:TabNavigator>
+
+    </mx:HDividedBox>
+    <s:HGroup width="100%" horizontalAlign="center">
+        <s:Label text="{aboutMe}"/>
+    </s:HGroup>
+
 </s:Application>

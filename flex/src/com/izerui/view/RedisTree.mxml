@@ -2,47 +2,31 @@
 <!--
   Created by Administrator on 2015/2/4.
 -->
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:support="com.izerui.support.*"
-        title="服务器列表">
+<support:DoubleClickTree xmlns:fx="http://ns.adobe.com/mxml/2009"
+                         xmlns:support="com.izerui.support.*"
+                         labelField="displayName"
+                         treeItemClick="tree_treeItemClickHandler(event)"
+                         creationComplete="tree1_creationCompleteHandler(event)">
 
     <fx:Metadata>
         [Event(name="dbItemSelectEvent",type="com.izerui.support.event.DbItemSelectEvent")]
     </fx:Metadata>
 
-    <s:layout>
-        <s:VerticalLayout/>
-    </s:layout>
-
-    <mx:MenuBar labelField="label" dataProvider="{menuList}" itemClick="menuBar1_itemClickHandler(event)" width="100%"/>
-
-    <support:DoubleClickTree id="tree" width="100%" height="100%" labelField="displayName"
-                             treeItemClick="tree_treeItemClickHandler(event)"
-             creationComplete="tree1_creationCompleteHandler(event)">
-
-    </support:DoubleClickTree>
 
     <fx:Script><![CDATA[
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
         import com.izerui.event.GetDbAmountEvent;
         import com.izerui.event.GetServerConfigsEvent;
-        import com.izerui.event.RemoveServerConfigEvent;
-        import com.izerui.support.AlertUtils;
-        import com.izerui.support.PopUtils;
         import com.izerui.support.event.DbItemSelectEvent;
-        import com.izerui.support.event.RedisServerUpdateEvent;
         import com.izerui.support.event.TreeItemClickEvent;
         import com.izerui.vo.RedisServerConfig;
 
         import mx.collections.ArrayCollection;
-        import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
-        import mx.events.MenuEvent;
-        import mx.utils.ObjectUtil;
 
-        private function loadTreeData():void {
+        public function loadTreeData():void {
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(function (data:ArrayCollection):void {
-                tree.dataProvider = data;
+                dataProvider = data;
             }));
         }
 
@@ -50,60 +34,9 @@
             loadTreeData();
         }
 
-        private function openServerConfigDialog(sateName:String,listener:Function,item:RedisServerConfig=null):void{
-            var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
-            if(item){
-                serverConfigDialog.item = item;
-            }
-            serverConfigDialog.currentState = sateName;
-            serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, listener);
-            PopUtils.popUp(serverConfigDialog);
-        }
-
-        private function menuBar1_itemClickHandler(event:MenuEvent):void {
-            switch (event.item.action) {
-                case "add":
-                {
-                    openServerConfigDialog("add", redisServerUpdateListener);
-                    break;
-                }
-                case "edit":
-                {
-                    if (tree.selectedIndex == -1 || tree.selectedItem.dbIndex != -1) {
-                        return;
-                    }
-                    openServerConfigDialog("edit", redisServerUpdateListener,RedisServerConfig(ObjectUtil.clone(tree.selectedItem)));
-                    break;
-                }
-                case "remove":
-                {
-                    if (tree.selectedIndex == -1 || tree.selectedItem.dbIndex != -1) {
-                        return;
-                    }
-                    AlertUtils.confirm("确认删除么?", "删除", FlexGlobals.topLevelApplication, function ():void {
-
-                        CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(tree.selectedItem), function ():void {
-                            loadTreeData();
-                        }));
-
-                    });
-
-                    break;
-                }
-
-                default:
-                {
-                    break;
-                }
-            }
-        }
-
-        protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
-            loadTreeData();
-        }
 
         private function tree_treeItemClickHandler(event:TreeItemClickEvent):void {
-            var selItem:RedisServerConfig = RedisServerConfig(tree.selectedItem);
+            var selItem:RedisServerConfig = RedisServerConfig(selectedItem);
             if (selItem.children) {
                 return;
             }
@@ -122,7 +55,7 @@
                         dbConfig.dbIndex = i;
                         selItem.children.addItem(dbConfig);
                     }
-                    tree.expandItem(selItem,true,true);
+                    expandItem(selItem, true, true);
                 }));
                 return;
             }
@@ -135,18 +68,4 @@
         ]]>
     </fx:Script>
 
-    <fx:Declarations>
-
-
-        <s:ArrayCollection id="menuList">
-            <fx:Object label="操作" children="{menuchildren}"/>
-        </s:ArrayCollection>
-        <fx:Array id="menuchildren">
-            <fx:Object label="添加" action="add"/>
-            <fx:Object label="修改" action="edit"/>
-            <fx:Object label="移除" action="remove"/>
-            <fx:Object label="属性" action="info"/>
-        </fx:Array>
-
-    </fx:Declarations>
-</s:Panel>
+</support:DoubleClickTree>
