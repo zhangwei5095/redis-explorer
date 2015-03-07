@@ -5,6 +5,7 @@
                xmlns:local="*"
                xmlns:view="com.izerui.view.*"
                pageTitle="redis-explorer"
+               creationComplete="creationCompleteHandler(event)"
                minWidth="955" minHeight="600">
     <s:layout>
         <s:VerticalLayout paddingBottom="6"/>
@@ -31,6 +32,7 @@
     <fx:Script><![CDATA[
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
         import com.izerui.event.GetKeysEvent;
+        import com.izerui.event.GetLanguageEvent;
         import com.izerui.event.RemoveServerConfigEvent;
         import com.izerui.support.AlertUtils;
         import com.izerui.support.PopUtils;
@@ -42,6 +44,7 @@
 
         import mx.collections.ArrayCollection;
         import mx.core.FlexGlobals;
+        import mx.events.FlexEvent;
         import mx.events.MenuEvent;
         import mx.utils.ObjectUtil;
 
@@ -92,7 +95,7 @@
                     if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
                         return;
                     }
-                    AlertUtils.confirm(resourceManager.getString('redis','confirmDelete'), resourceManager.getString('redis','delete'), FlexGlobals.topLevelApplication, function ():void {
+                    AlertUtils.confirm(resourceManager.getString('redis', 'confirmDelete'), resourceManager.getString('redis', 'delete'), FlexGlobals.topLevelApplication, function ():void {
 
                         CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(redisTree.selectedItem), function ():void {
                             redisTree.loadTreeData();
@@ -103,10 +106,10 @@
                     break;
                 }
                 case "english":
-                    language("english");
+                    language("en_US");
                     break;
                 case "chinese":
-                    language("chinese");
+                    language("zh_CN");
                     break;
 
                 default:
@@ -195,12 +198,14 @@
         }
 
         private function language(lang:String):void {
-            if (lang=="english") {
-                resourceManager.localeChain = ["en_US"];
-            } else if (lang=="chinese") {
-                resourceManager.localeChain = ["zh_CN"];
-            }
+            resourceManager.localeChain = [lang];
             mBar.dataProvider = menuBarData;
+        }
+
+        private function creationCompleteHandler(event:FlexEvent):void {
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetLanguageEvent(function(data:String):void{
+                language(data);
+            }));
         }
         ]]>
 	</fx:Script>

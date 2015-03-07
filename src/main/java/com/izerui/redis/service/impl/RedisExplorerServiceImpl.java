@@ -9,10 +9,8 @@ import com.izerui.redis.command.hash.AddHash;
 import com.izerui.redis.command.hash.ReadHash;
 import com.izerui.redis.command.key.*;
 import com.izerui.redis.command.list.AllList;
-import com.izerui.redis.command.list.SetValue;
 import com.izerui.redis.command.list.UpdateList;
 import com.izerui.redis.command.server.DbAmount;
-import com.izerui.redis.command.set.AddSet;
 import com.izerui.redis.command.set.AllSet;
 import com.izerui.redis.command.set.UpdateSet;
 import com.izerui.redis.command.string.ReadString;
@@ -25,6 +23,7 @@ import com.izerui.redis.repository.ServerConfigRepository;
 import com.izerui.redis.service.RedisExplorerService;
 import com.izerui.redis.utils.MapListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
@@ -43,6 +42,13 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
 
     @Autowired
     ServerConfigRepository serverConfigRepository;
+    @Value("${default.locale}")
+    String language;
+
+    @Override
+    public String getLanguage() {
+        return language;
+    }
 
     @Override
     public List<RedisServerConfig> getServerConfigs() {
