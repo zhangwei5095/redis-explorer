@@ -51,7 +51,7 @@
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 				if(!hashGrid.dataProvider||!hashGrid.dataProvider.length){
-					Alert.show("请添加值","提示");
+					Alert.show(resourceManager.getString("redis","addValueTip"),resourceManager.getString("redis","warn"));
 					return;
 				}
 				CairngormEventDispatcher.getInstance().dispatchEvent(new SaveHashValueEvent(
@@ -59,7 +59,7 @@
 					key.name,
 					hashGrid.dataProvider,
 					function():void{
-						Alert.show("保存成功","提示");
+						Alert.show(resourceManager.getString("redis","saveSuccess"),resourceManager.getString("redis","success"));
 						updateGridItem.call(null);
 						getValue();
 					}

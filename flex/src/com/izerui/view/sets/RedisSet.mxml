@@ -68,7 +68,7 @@
 
         private function button3_clickHandler(event:MouseEvent):void {
             if (!setData.dataProvider || !setData.dataProvider.length) {
-                Alert.show("请添加值", "提示");
+                Alert.show(resourceManager.getString("redis","addValueTip"),resourceManager.getString("redis","warn"));
                 return;
             }
             CairngormEventDispatcher.getInstance().dispatchEvent(new SetSetValueEvent(
@@ -76,7 +76,7 @@
                     key.name,
                     setData.dataProvider,
                     function ():void {
-                        Alert.show("保存成功", "提示");
+                        Alert.show(resourceManager.getString("redis","saveSuccess"),resourceManager.getString("redis","success"));
                         updateGridItem.call(null);
                         getValue();
                     }

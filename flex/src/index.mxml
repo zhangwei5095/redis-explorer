@@ -92,7 +92,7 @@
                     if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
                         return;
                     }
-                    AlertUtils.confirm("确认删除么?", "删除", FlexGlobals.topLevelApplication, function ():void {
+                    AlertUtils.confirm(resourceManager.getString('redis','confirmDelete'), resourceManager.getString('redis','delete'), FlexGlobals.topLevelApplication, function ():void {
 
                         CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(redisTree.selectedItem), function ():void {
                             redisTree.loadTreeData();

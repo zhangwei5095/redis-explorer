@@ -50,7 +50,7 @@
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 				if(!valueInput.text){
-					Alert.show("请添加值","提示");
+                    Alert.show(resourceManager.getString("redis","addValueTip"),resourceManager.getString("redis","warn"));
 					return;
 				}
 				CairngormEventDispatcher.getInstance().dispatchEvent(new SaveStringValueEvent(
@@ -58,7 +58,7 @@
 					key.name,
 					valueInput.text,
 					function():void{
-						Alert.show("保存成功","提示");
+                        Alert.show(resourceManager.getString("redis","saveSuccess"),resourceManager.getString("redis","success"));
 						updateGridItem.call(null);
 						getValue();
 					}

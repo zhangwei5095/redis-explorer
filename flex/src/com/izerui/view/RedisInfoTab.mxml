@@ -1,146 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TabNavigator xmlns:fx="http://ns.adobe.com/mxml/2009" 
-				 xmlns:s="library://ns.adobe.com/flex/spark" 
-				 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:string="com.izerui.view.string.*" xmlns:hash="com.izerui.view.hash.*" xmlns:list="com.izerui.view.list.*" xmlns:sets="com.izerui.view.sets.*" xmlns:zset="com.izerui.view.zset.*"
-				 change="synTTLsTime();">
-	<mx:states>
-		<s:State name="State1"/>
-		<s:State name="string"/>
-		<s:State name="list"/>
-		<s:State name="hash"/>
-		<s:State name="set"/>
-		<s:State name="zset"/>
-	</mx:states>
-	<fx:Metadata>
-		[Event(name="keyDataChangeEvent",type="com.izerui.support.event.KeyDataChangeEvent")]
-	</fx:Metadata>
-	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-	</fx:Declarations>
-	
-	<fx:Script>
+<mx:TabNavigator xmlns:fx="http://ns.adobe.com/mxml/2009"
+                 xmlns:s="library://ns.adobe.com/flex/spark"
+                 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
+                 xmlns:string="com.izerui.view.string.*" xmlns:hash="com.izerui.view.hash.*"
+                 xmlns:list="com.izerui.view.list.*" xmlns:sets="com.izerui.view.sets.*"
+                 xmlns:zset="com.izerui.view.zset.*"
+                 change="synTTLsTime();">
+    <mx:states>
+        <s:State name="State1"/>
+        <s:State name="string"/>
+        <s:State name="list"/>
+        <s:State name="hash"/>
+        <s:State name="set"/>
+        <s:State name="zset"/>
+    </mx:states>
+    <fx:Metadata>
+        [Event(name="keyDataChangeEvent", type="com.izerui.support.event.KeyDataChangeEvent")]
+    </fx:Metadata>
+    <fx:Declarations>
+        <!-- 将非可视元素（例如服务、值对象）放在此处 -->
+    </fx:Declarations>
+
+    <fx:Script>
 		<![CDATA[
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
-			import com.izerui.event.GetTTLsEvent;
-			import com.izerui.event.SetExpireEvent;
-			import com.izerui.support.event.KeyDataChangeEvent;
-			import com.izerui.vo.Key;
-			
-			import mx.controls.Alert;
-			import mx.core.FlexGlobals;
-			
-			private var _key:Key;
-			
-			private var _timer:Timer ;
-			public function get timer():Timer
-			{
-				if(_timer==null){
-					_timer = new Timer(1000);
-					timer.addEventListener(TimerEvent.TIMER,refrashTTlsEvent);
-				}
-				return _timer;
-			}
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.GetTTLsEvent;
+        import com.izerui.event.SetExpireEvent;
+        import com.izerui.support.event.KeyDataChangeEvent;
+        import com.izerui.vo.Key;
 
-			[Bindable]
-			public function get key():Key
-			{
-				return _key;
-			}
+        import mx.controls.Alert;
+        import mx.core.FlexGlobals;
 
-			public function set key(value:Key):void
-			{
-				_key = value;
-				this.currentState = value.type;
-				synTTLsTime();
-			}
+        private var _key:Key;
 
-			private function synTTLsTime():void
-			{
-				if(this.selectedIndex==1){
-					refrashTTLs();
-				}
-				
-			}
-			
-			
-			private function refrashTTLs():void
-			{
-				CairngormEventDispatcher.getInstance().dispatchEvent(new GetTTLsEvent(FlexGlobals.topLevelApplication.server,key.name,
-					function(data:Number):void{
-						ttlsTime.value = data;
-						if(data >0){
-							ttlsTimeCheckBox.selected = true;
-							timer.start();
-						}else{
-							ttlsTimeCheckBox.selected = false;
-							timer.stop();
-						}
-						//改变设置超时输入框的值
-						ttlsTimeCheckBox.dispatchEvent(new Event(Event.CHANGE));
-				}));
-			}
-			
-			protected function refrashTTlsEvent(event:TimerEvent):void
-			{
-				if(ttlsTime.value <=0){
-					timer.stop();
-					return;
-				}
-				ttlsTime.value = ttlsTime.value -1;
-			}
-			
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				if(ttlsTimeCheckBox.selected&&setTTLsTime.value<=0){
-					Alert.show("请设置有效的超时时间!","提示");
-					return;
-				}
-				CairngormEventDispatcher.getInstance().dispatchEvent(new SetExpireEvent(
-					FlexGlobals.topLevelApplication.server,
-					key.name,
-					setTTLsTime.value,
-					function():void{
-						synTTLsTime();
-						updateGridItem();
-						Alert.show("设置成功","成功");
-					}
-				));
-			}
-			
-			public function updateGridItem():void{
-				this.dispatchEvent(new KeyDataChangeEvent(key));
-			}
-			
-		]]>
+        private var _timer:Timer;
+        public function get timer():Timer {
+            if (_timer == null) {
+                _timer = new Timer(1000);
+                timer.addEventListener(TimerEvent.TIMER, refrashTTlsEvent);
+            }
+            return _timer;
+        }
+
+        [Bindable]
+        public function get key():Key {
+            return _key;
+        }
+
+        public function set key(value:Key):void {
+            _key = value;
+            this.currentState = value.type;
+            synTTLsTime();
+        }
+
+        private function synTTLsTime():void {
+            if (this.selectedIndex == 1) {
+                refrashTTLs();
+            }
+
+        }
+
+
+        private function refrashTTLs():void {
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetTTLsEvent(FlexGlobals.topLevelApplication.server, key.name,
+                    function (data:Number):void {
+                        ttlsTime.value = data;
+                        if (data > 0) {
+                            ttlsTimeCheckBox.selected = true;
+                            timer.start();
+                        } else {
+                            ttlsTimeCheckBox.selected = false;
+                            timer.stop();
+                        }
+                        //改变设置超时输入框的值
+                        ttlsTimeCheckBox.dispatchEvent(new Event(Event.CHANGE));
+                    }));
+        }
+
+        protected function refrashTTlsEvent(event:TimerEvent):void {
+            if (ttlsTime.value <= 0) {
+                timer.stop();
+                return;
+            }
+            ttlsTime.value = ttlsTime.value - 1;
+        }
+
+        protected function button1_clickHandler(event:MouseEvent):void {
+            if (ttlsTimeCheckBox.selected && setTTLsTime.value <= 0) {
+                Alert.show(resourceManager.getString("redis","correctionTtlTime"), resourceManager.getString("redis","warn"));
+                return;
+            }
+            CairngormEventDispatcher.getInstance().dispatchEvent(new SetExpireEvent(
+                    FlexGlobals.topLevelApplication.server,
+                    key.name,
+                    setTTLsTime.value,
+                    function ():void {
+                        synTTLsTime();
+                        updateGridItem();
+                        Alert.show(resourceManager.getString("redis","saveSuccess"),resourceManager.getString("redis","success"));
+                    }
+            ));
+        }
+
+        public function updateGridItem():void {
+            this.dispatchEvent(new KeyDataChangeEvent(key));
+        }
+        ]]>
 	</fx:Script>
-	
-	<s:NavigatorContent  width="100%" height="100%" label="{resourceManager.getString('redis',key.type)}" icon="@Embed('/images/attr.png')">
-		<string:RedisString key="{key}" width="100%" height="100%" includeIn="string" updateGridItem="updateGridItem"/>
-		<hash:RedisHash key="{key}" width="100%" height="100%" includeIn="hash" updateGridItem="updateGridItem"/>
-		<list:RedisList key="{key}" height="100%" width="100%" includeIn="list" updateGridItem="updateGridItem"/>
-		<sets:RedisSet key="{key}" height="100%" width="100%" includeIn="set" updateGridItem="updateGridItem"/>
-		<zset:RedisZSet key="{key}" height="100%" width="100%" includeIn="zset" updateGridItem="updateGridItem"/>
-	</s:NavigatorContent>
-	
-	<s:NavigatorContent width="100%" height="100%" label="{resourceManager.getString('redis','ttlTime')}" icon="@Embed('/images/time.png')">
-		<s:Form width="100%" height="100%">
-			<s:FormItem label="{resourceManager.getString('redis','expire')}">
-				<s:CheckBox id="ttlsTimeCheckBox" change="setTTLsTime.value = ttlsTimeCheckBox.selected?0:-1;">
-					
-				</s:CheckBox>
-			</s:FormItem>
-			<s:FormItem label="{resourceManager.getString('redis','ttl')} ({resourceManager.getString('redis','second')})" visible="{ttlsTimeCheckBox.selected}">
-				<s:NumericStepper id="ttlsTime"  enabled="false" width="100%" minimum="-1" maximum="{Number.MAX_VALUE}"/>
-			</s:FormItem>
-			<s:FormItem label="{resourceManager.getString('redis','set_ttl')} ({resourceManager.getString('redis','second')})" visible="{ttlsTimeCheckBox.selected}">
-				<s:NumericStepper id="setTTLsTime" width="100%"  minimum="-1" maximum="{Number.MAX_VALUE}"/>
-			</s:FormItem>
-			<s:FormItem width="100%">
-				<s:HGroup horizontalAlign="right" width="100%" >
-					<s:Button label="{resourceManager.getString('redis','apply')}" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)"/>
-					<s:Button label="{resourceManager.getString('redis','cancel')}" icon="@Embed('/images/redo.png')" click="refrashTTLs();"/>
-				</s:HGroup>
-			</s:FormItem>
-		</s:Form>
-	</s:NavigatorContent>
+
+    <s:NavigatorContent width="100%" height="100%" label="{resourceManager.getString('redis',key.type)}"
+                        icon="@Embed('/images/attr.png')">
+        <string:RedisString key="{key}" width="100%" height="100%" includeIn="string" updateGridItem="updateGridItem"/>
+        <hash:RedisHash key="{key}" width="100%" height="100%" includeIn="hash" updateGridItem="updateGridItem"/>
+        <list:RedisList key="{key}" height="100%" width="100%" includeIn="list" updateGridItem="updateGridItem"/>
+        <sets:RedisSet key="{key}" height="100%" width="100%" includeIn="set" updateGridItem="updateGridItem"/>
+        <zset:RedisZSet key="{key}" height="100%" width="100%" includeIn="zset" updateGridItem="updateGridItem"/>
+    </s:NavigatorContent>
+
+    <s:NavigatorContent width="100%" height="100%" label="{resourceManager.getString('redis','ttlTime')}"
+                        icon="@Embed('/images/time.png')">
+        <s:Form width="100%" height="100%">
+            <s:FormItem label="{resourceManager.getString('redis','expire')}">
+                <s:CheckBox id="ttlsTimeCheckBox" change="setTTLsTime.value = ttlsTimeCheckBox.selected?0:-1;">
+
+                </s:CheckBox>
+            </s:FormItem>
+            <s:FormItem
+                    label="{resourceManager.getString('redis','ttl')} ({resourceManager.getString('redis','second')})"
+                    visible="{ttlsTimeCheckBox.selected}">
+                <s:NumericStepper id="ttlsTime" enabled="false" width="100%" minimum="-1" maximum="{Number.MAX_VALUE}"/>
+            </s:FormItem>
+            <s:FormItem
+                    label="{resourceManager.getString('redis','set_ttl')} ({resourceManager.getString('redis','second')})"
+                    visible="{ttlsTimeCheckBox.selected}">
+                <s:NumericStepper id="setTTLsTime" width="100%" minimum="-1" maximum="{Number.MAX_VALUE}"/>
+            </s:FormItem>
+            <s:FormItem width="100%">
+                <s:HGroup horizontalAlign="right" width="100%">
+                    <s:Button label="{resourceManager.getString('redis','apply')}" icon="@Embed('/images/accept.png')"
+                              click="button1_clickHandler(event)"/>
+                    <s:Button label="{resourceManager.getString('redis','cancel')}" icon="@Embed('/images/redo.png')"
+                              click="refrashTTLs();"/>
+                </s:HGroup>
+            </s:FormItem>
+        </s:Form>
+    </s:NavigatorContent>
 </mx:TabNavigator>
