@@ -41,7 +41,7 @@
         import com.izerui.view.AboutUS;
         import com.izerui.view.ServerConfigDialog;
         import com.izerui.vo.RedisServerConfig;
-
+        
         import mx.collections.ArrayCollection;
         import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
@@ -206,6 +206,7 @@
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetLanguageEvent(function(data:String):void{
                 language(data);
             }));
+//			PopUtils.popUp(new LoginPanel(),true);
         }
         ]]>
 	</fx:Script>
