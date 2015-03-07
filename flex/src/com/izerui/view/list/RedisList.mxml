@@ -95,31 +95,31 @@
 	</fx:Script>
 
     <mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
-        <s:FormItem width="100%" label="键  (key):">
+        <s:FormItem width="100%" label="{resourceManager.getString('redis','key')}  (key):">
             <s:HGroup width="100%">
                 <s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
-                <s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
+                <s:Button label="{resourceManager.getString('redis','copy')}" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
             </s:HGroup>
         </s:FormItem>
-        <s:FormItem width="100%" label="列表(值):">
+        <s:FormItem width="100%" label="{resourceManager.getString('redis','list')}({resourceManager.getString('redis','value')}):">
             <s:HGroup width="100%">
 
                 <mx:DataGrid id="listData" width="100%" height="200" editable="true"
                              dropEnabled="true"
                              dragEnabled="true"
-                             toolTip="拖动可以排序"
+                             toolTip="{resourceManager.getString('redis','dragInfo')}"
                              dragMoveEnabled="true"
                              dragStart="listData_dragStartHandler(event)"
                              dragComplete="listData_dragCompleteHandler(event)">
                     <mx:columns>
-                        <mx:DataGridColumn dataField="label" headerText="值"/>
+                        <mx:DataGridColumn dataField="label" headerText="{resourceManager.getString('redis','value')}"/>
                     </mx:columns>
                 </mx:DataGrid>
                 <s:VGroup>
-                    <s:Button label="添加" icon="@Embed('/images/add.png')" click="button1_clickHandler(event)"/>
-                    <s:Button label="删除" icon="@Embed('/images/delete.png')" click="button2_clickHandler(event)"/>
-                    <s:Button label="应用" icon="@Embed('/images/accept.png')" click="button3_clickHandler(event)"/>
-                    <s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
+                    <s:Button label="{resourceManager.getString('redis','add')}" icon="@Embed('/images/add.png')" click="button1_clickHandler(event)"/>
+                    <s:Button label="{resourceManager.getString('redis','delete')}" icon="@Embed('/images/delete.png')" click="button2_clickHandler(event)"/>
+                    <s:Button label="{resourceManager.getString('redis','apply')}" icon="@Embed('/images/accept.png')" click="button3_clickHandler(event)"/>
+                    <s:Button label="{resourceManager.getString('redis','cancel')}" icon="@Embed('/images/redo.png')" click="getValue()"/>
                 </s:VGroup>
             </s:HGroup>
         </s:FormItem>

@@ -5,7 +5,7 @@
 <mx:DataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx">
 
   <mx:columns>
-    <mx:DataGridColumn itemRenderer="com.izerui.view.renderer.NameRenderer" width="2"/>
+    <mx:DataGridColumn itemRenderer="com.izerui.view.renderer.NameRenderer" sortable="false" width="2"/>
     <mx:DataGridColumn headerText="名称" dataField="name" width="100"/>
     <mx:DataGridColumn headerText="类型" dataField="type" width="100"/>
     <mx:DataGridColumn headerText="大小" dataField="size" width="100"/>

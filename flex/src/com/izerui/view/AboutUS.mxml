@@ -7,7 +7,7 @@
           addedEffect="{fadeIn}"
           removedEffect="{fadeOut}"
           mouseDownOutside="PopUpManager.removePopUp(this);"
-		  title="关于">
+		  title="{resourceManager.getString('redis','about')}">
 	<fx:Script>
 		<![CDATA[
 			import flash.net.navigateToURL;

@@ -114,7 +114,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:NavigatorContent  width="100%" height="100%" label="{key.typeName}" icon="@Embed('/images/attr.png')">
+	<s:NavigatorContent  width="100%" height="100%" label="{resourceManager.getString('redis',key.type)}" icon="@Embed('/images/attr.png')">
 		<string:RedisString key="{key}" width="100%" height="100%" includeIn="string" updateGridItem="updateGridItem"/>
 		<hash:RedisHash key="{key}" width="100%" height="100%" includeIn="hash" updateGridItem="updateGridItem"/>
 		<list:RedisList key="{key}" height="100%" width="100%" includeIn="list" updateGridItem="updateGridItem"/>
@@ -122,23 +122,23 @@
 		<zset:RedisZSet key="{key}" height="100%" width="100%" includeIn="zset" updateGridItem="updateGridItem"/>
 	</s:NavigatorContent>
 	
-	<s:NavigatorContent width="100%" height="100%" label="生存时间" icon="@Embed('/images/time.png')">
+	<s:NavigatorContent width="100%" height="100%" label="{resourceManager.getString('redis','ttlTime')}" icon="@Embed('/images/time.png')">
 		<s:Form width="100%" height="100%">
-			<s:FormItem label="过期">
+			<s:FormItem label="{resourceManager.getString('redis','expire')}">
 				<s:CheckBox id="ttlsTimeCheckBox" change="setTTLsTime.value = ttlsTimeCheckBox.selected?0:-1;">
 					
 				</s:CheckBox>
 			</s:FormItem>
-			<s:FormItem label="生存时间 (秒)" visible="{ttlsTimeCheckBox.selected}">
+			<s:FormItem label="{resourceManager.getString('redis','ttl')} ({resourceManager.getString('redis','second')})" visible="{ttlsTimeCheckBox.selected}">
 				<s:NumericStepper id="ttlsTime"  enabled="false" width="100%" minimum="-1" maximum="{Number.MAX_VALUE}"/>
 			</s:FormItem>
-			<s:FormItem label="设置时间 (秒)" visible="{ttlsTimeCheckBox.selected}">
+			<s:FormItem label="{resourceManager.getString('redis','set_ttl')} ({resourceManager.getString('redis','second')})" visible="{ttlsTimeCheckBox.selected}">
 				<s:NumericStepper id="setTTLsTime" width="100%"  minimum="-1" maximum="{Number.MAX_VALUE}"/>
 			</s:FormItem>
 			<s:FormItem width="100%">
 				<s:HGroup horizontalAlign="right" width="100%" >
-					<s:Button label="应用" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)"/>
-					<s:Button label="取消" icon="@Embed('/images/redo.png')" click="refrashTTLs();"/>
+					<s:Button label="{resourceManager.getString('redis','apply')}" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)"/>
+					<s:Button label="{resourceManager.getString('redis','cancel')}" icon="@Embed('/images/redo.png')" click="refrashTTLs();"/>
 				</s:HGroup>
 			</s:FormItem>
 		</s:Form>

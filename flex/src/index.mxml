@@ -57,8 +57,8 @@
         [Embed("/images/list.png")]
         public const listImg:Class;
 
-        [Embed("/images/about.png")]
-        public const aboutImg:Class;
+        [Embed("/images/help.png")]
+        public const helpImg:Class;
 
         private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void {
             server = event.selItem;
@@ -70,24 +70,24 @@
         }
 
         private function mBar_itemClickHandler(event:MenuEvent):void {
-            switch (event.label){
-                case "关于":
-                    PopUtils.popUp(new AboutUS(),false);
+            switch (event.item.data) {
+                case "about":
+                    PopUtils.popUp(new AboutUS(), false);
                     break;
-                case "添加":
+                case "addServer":
                 {
                     openServerConfigDialog("add", redisServerUpdateListener);
                     break;
                 }
-                case "修改":
+                case "editServer":
                 {
                     if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
                         return;
                     }
-                    openServerConfigDialog("edit", redisServerUpdateListener,RedisServerConfig(ObjectUtil.clone(redisTree.selectedItem)));
+                    openServerConfigDialog("edit", redisServerUpdateListener, RedisServerConfig(ObjectUtil.clone(redisTree.selectedItem)));
                     break;
                 }
-                case "移除":
+                case "removeServer":
                 {
                     if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
                         return;
@@ -102,6 +102,12 @@
 
                     break;
                 }
+                case "english":
+                    language("english");
+                    break;
+                case "chinese":
+                    language("chinese");
+                    break;
 
                 default:
                 {
@@ -110,9 +116,9 @@
             }
         }
 
-        private function openServerConfigDialog(sateName:String,listener:Function,item:RedisServerConfig=null):void{
+        private function openServerConfigDialog(sateName:String, listener:Function, item:RedisServerConfig = null):void {
             var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
-            if(item){
+            if (item) {
                 serverConfigDialog.item = item;
             }
             serverConfigDialog.currentState = sateName;
@@ -124,14 +130,77 @@
             redisTree.loadTreeData();
         }
 
-        private function language_clickHandler(event:MouseEvent):void {
-            if(resourceManager.localeChain[0]=="zh_CN"){
+        [Bindable]
+        private function get menuBarData():ArrayCollection {
+            var data:ArrayCollection = new ArrayCollection();
+            data.addItem({
+                "label": resourceManager.getString("redis", "server"), "icon": "serverImg",
+                "children": [
+                    {"label": resourceManager.getString("redis", "add"), "data": "addServer"},
+                    {"label": resourceManager.getString("redis", "edit"), "data": "editServer"},
+                    {"label": resourceManager.getString("redis", "remove"), "data": "removeServer"}
+                ]
+            });
+            data.addItem({
+                "label": resourceManager.getString("redis", "data"), "icon": "listImg",
+                "children": [
+                    {
+                        "label": resourceManager.getString("redis", "create"),
+                        "children": [
+                            {"label": resourceManager.getString("redis", "string"), "data": "createString"},
+                            {"label": resourceManager.getString("redis", "list"), "data": "createList"},
+                            {"label": resourceManager.getString("redis", "set"), "data": "createSet"},
+                            {"label": resourceManager.getString("redis", "zset"), "data": "createZSet"},
+                            {"label": resourceManager.getString("redis", "hash"), "data": "createHash"}
+                        ]
+                    },
+                    {"label": resourceManager.getString("redis", "rename"), "data": "rename"},
+                    {"label": resourceManager.getString("redis", "delete"), "data": "deleteKey"},
+                    {"label": resourceManager.getString("redis", "attr"), "data": "attr"},
+                    {"type": "separator"},
+                    {"label": resourceManager.getString("redis", "cut"), "data": "cut"},
+                    {"label": resourceManager.getString("redis", "copy"), "data": "copy"},
+                    {"label": resourceManager.getString("redis", "paste"), "data": "paste"},
+                    {"type": "separator"},
+                    {"label": resourceManager.getString("redis", "import"), "data": "import"},
+                    {"label": resourceManager.getString("redis", "export"), "data": "export"},
+                ]
+            });
+            data.addItem({
+                "label": resourceManager.getString("redis", "help"), "icon": "helpImg",
+                "children": [
+                    {
+                        "label": resourceManager.getString("redis", "lang"),
+                        "children": [
+                            {
+                                "label": resourceManager.getString("redis", "english"),
+                                "data": "english",
+                                "type": "radio",
+                                "groupName": "lang",
+                                "toggled": resourceManager.localeChain[0] == "en_US"
+                            },
+                            {
+                                "label": resourceManager.getString("redis", "chinese"),
+                                "data": "chinese",
+                                "type": "radio",
+                                "groupName": "lang",
+                                "toggled": resourceManager.localeChain[0] == "zh_CN"
+                            }
+                        ]
+                    },
+                    {"label": resourceManager.getString("redis", "about"), "data": "about"}
+                ]
+            });
+            return data;
+        }
+
+        private function language(lang:String):void {
+            if (lang=="english") {
                 resourceManager.localeChain = ["en_US"];
-                i18nButton.label = "中文";
-            }else if(resourceManager.localeChain[0]=="en_US"){
+            } else if (lang=="chinese") {
                 resourceManager.localeChain = ["zh_CN"];
-                i18nButton.label = "ENGLISH";
             }
+            mBar.dataProvider = menuBarData;
         }
         ]]>
 	</fx:Script>
@@ -140,57 +209,25 @@
         <mx:Image source="@Embed('/images/redis.png')"/>
         <mx:Label text="redis-explorer" fontSize="32" fontWeight="bold"/>
         <mx:Spacer width="30"/>
-        <mx:MenuBar id="mBar" height="32" iconField="@icon" itemClick="mBar_itemClickHandler(event)"
-                    labelField="@label">
-            <mx:dataProvider>
-                <s:XMLListCollection>
-                    <fx:XMLList>
-                        <menu label="服务器" icon="serverImg">
-                            <item label="添加"/>
-                            <item label="修改"/>
-                            <item label="移除"/>
-                        </menu>
-                        <menu label="数据" icon="listImg">
-                            <item label="新建">
-                                <item label="字符串"/>
-                                <item label="列表"/>
-                                <item label="集合"/>
-                                <item label="有序集合"/>
-                                <item label="哈希表"/>
-                            </item>
-                            <item label="重命名"/>
-                            <item label="删除"/>
-                            <item label="属性"/>
-                            <item type="separator"/>
-                            <item label="剪切 Ctrl+x"/>
-                            <item label="拷贝 Ctrl+c"/>
-                            <item label="粘贴 Ctrl+v"/>
-                            <item type="separator"/>
-                            <item label="导入"/>
-                            <item label="导出"/>
-                        </menu>
-                        <menu label="帮助" icon="aboutImg">
-                            <item label="关于"/>
-                        </menu>
-                    </fx:XMLList>
-                </s:XMLListCollection>
-            </mx:dataProvider>
+        <mx:MenuBar id="mBar" height="32" iconField="icon" labelField="label" itemClick="mBar_itemClickHandler(event)"
+                    creationComplete="mBar.dataProvider=menuBarData">
         </mx:MenuBar>
         <s:Spacer width="100%"/>
-        <mx:Button id="i18nButton" label="ENGLISH" click="language_clickHandler(event)" icon="@Embed('/images/lang.png')"/>
     </s:controlBarContent>
 
     <mx:HDividedBox width="100%" height="100%">
         <mx:TabNavigator width="200" height="100%">
-            <s:NavigatorContent label="{resourceManager.getString('redis','servers')}" icon="@Embed('/images/redis16.png')" width="100%" height="100%">
+            <s:NavigatorContent label="{resourceManager.getString('redis','servers')}"
+                                icon="@Embed('/images/redis16.png')" width="100%" height="100%">
                 <view:RedisTree width="100%" height="100%" id="redisTree"
-                                dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)" />
+                                dbItemSelectEvent="redisTree1_dbItemSelectEventHandler(event)"/>
             </s:NavigatorContent>
         </mx:TabNavigator>
 
 
         <mx:TabNavigator width="100%" height="100%">
-            <s:NavigatorContent label="{resourceManager.getString('redis','explorer')}" icon="@Embed('/images/list.png')" width="100%" height="100%">
+            <s:NavigatorContent label="{resourceManager.getString('redis','explorer')}"
+                                icon="@Embed('/images/list.png')" width="100%" height="100%">
                 <view:RedisMain id="mainGrid" width="100%" height="100%">
 
                 </view:RedisMain>

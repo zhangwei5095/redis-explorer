@@ -69,22 +69,22 @@
 	</fx:Script>
 	
 	<mx:Form width="100%" height="100%" verticalGap="0" paddingTop="0">
-		<s:FormItem width="100%" label="键  (key):">
+		<s:FormItem width="100%" label="{resourceManager.getString('redis','key')}  (key):">
 			<s:HGroup  width="100%" >
 				<s:TextInput id="keyInput" width="100%" editable="false" text="{key.name}"/>
-				<s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
+				<s:Button label="{resourceManager.getString('redis','copy')}" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(keyInput.text)"/>
 			</s:HGroup>
 		</s:FormItem>
-		<s:FormItem width="100%" label="值(value):">
+		<s:FormItem width="100%" label="{resourceManager.getString('redis','value')}(value):">
 			<s:HGroup  width="100%" >
 				<s:TextArea id="valueInput" width="100%" height="150"/>
-				<s:Button label="复制" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(valueInput.text)"/>
+				<s:Button label="{resourceManager.getString('redis','copy')}" icon="@Embed('/images/copy.png')" click="GlobUtils.copyValue(valueInput.text)"/>
 			</s:HGroup>
 		</s:FormItem>
 		<s:FormItem width="100%">
 			<s:HGroup horizontalAlign="right" width="100%" >
-				<s:Button label="应用" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)"/>
-				<s:Button label="取消" icon="@Embed('/images/redo.png')" click="getValue()"/>
+				<s:Button label="{resourceManager.getString('redis','apply')}" icon="@Embed('/images/accept.png')" click="button1_clickHandler(event)"/>
+				<s:Button label="{resourceManager.getString('redis','cancel')}" icon="@Embed('/images/redo.png')" click="getValue()"/>
 			</s:HGroup>
 		</s:FormItem>
 	</mx:Form>

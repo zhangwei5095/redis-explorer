@@ -10,35 +10,6 @@ public class Key implements IValueObject {
 	public var ttls:Number;
 	//key在gridlist中的索引
 	public var rowIndex:int;
-	
-	[Bindable]
-	public function get typeName():String
-	{
-		switch(type)
-		{
-			case "hash":
-			{
-				return "哈希表";	
-			}
-			case "string":
-			{
-				return "字符串";	
-			}
-			case "list":
-			{
-				return "列表";	
-			}
-			case "set":
-			{
-				return "集合";	
-			}
-			case "zset":
-			{
-				return "有序集合";	
-			}
-		}
-		return null;
-	}
 
 }
 }
