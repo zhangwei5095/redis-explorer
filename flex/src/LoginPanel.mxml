@@ -6,45 +6,62 @@
 		  width="330" height="196" title="登陆" isPopUp="true" verticalAlign="middle" horizontalAlign="center">
 
 	<fx:Script><![CDATA[
-		import com.adobe.cairngorm.control.CairngormEventDispatcher;
-		import com.izerui.event.LoginEvent;
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.LoginEvent;
 
-		import mx.managers.PopUpManager;
-		import mx.validators.Validator;
+        import mx.managers.PopUpManager;
+        import mx.validators.Validator;
 
-		private function button1_clickHandler(event:MouseEvent):void{
-			var validates:Array = Validator.validateAll([usernameValidator, passwordValidator]);
-			if (validates.length != 0) {
-				return;
-			}
-			CairngormEventDispatcher.getInstance().dispatchEvent(new LoginEvent(username.text,password.text,function(data:Boolean):void{
-				if(data){
-					PopUpManager.removePopUp(this);
-				}else{
-					//TODO 左右抖动
-				}
-			}));
-		}
-		]]>
+        private function button1_clickHandler(event:MouseEvent):void {
+            var validates:Array = Validator.validateAll([usernameValidator, passwordValidator]);
+            if (validates.length != 0) {
+                shake.play();
+                return;
+            }
+            CairngormEventDispatcher.getInstance().dispatchEvent(new LoginEvent(username.text, password.text, function (data:Boolean):void {
+                if (data) {
+                    loginSuccess();
+                } else {
+                    shake.play();
+                }
+            }));
+        }
+
+        private function loginSuccess():void {
+            PopUpManager.removePopUp(this);
+        }
+
+        private function myKeyDownHandler(event:KeyboardEvent):void {
+            if(event.keyCode == Keyboard.ENTER){
+                sub.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+            }
+        }
+        ]]>
 	</fx:Script>
 
 	<fx:Declarations>
 		<mx:StringValidator id="usernameValidator" source="{username}" required="true" property="text" />
 		<mx:StringValidator id="passwordValidator" source="{password}" required="true" property="text"/>
+        <s:Sequence id="shake" target="{this}">
+            <mx:Move duration="10" xTo="{this.x-10}"/>
+            <mx:Move duration="20" xTo="{this.x+10}"/>
+            <mx:Move duration="30" xTo="{this.x-10}"/>
+            <mx:Move duration="40" xTo="{this.x}"/>
+        </s:Sequence>
 	</fx:Declarations>
 	
 	<mx:Form verticalGap="16">
 		<mx:FormItem label="用户:" icon="@Embed('/images/user.png')">
-				<mx:TextInput id="username" width="160"/>
+				<mx:TextInput id="username" width="160" keyDown="myKeyDownHandler(event)"/>
 		</mx:FormItem>
 		<mx:FormItem label="密码:" icon="@Embed('/images/pass.png')">
-			<mx:TextInput id="password" width="160" displayAsPassword="true"/>
+			<mx:TextInput id="password" width="160" displayAsPassword="true" keyDown="myKeyDownHandler(event)"/>
 		</mx:FormItem>
 		
 	</mx:Form>
     <mx:ControlBar>
 		<s:HGroup width="100%" horizontalAlign="right">
-			<mx:Button label="登陆" click="button1_clickHandler(event)"/>
+			<mx:Button id="sub" label="登陆" click="button1_clickHandler(event)"/>
 		</s:HGroup>
 	</mx:ControlBar>
 </mx:Panel>
