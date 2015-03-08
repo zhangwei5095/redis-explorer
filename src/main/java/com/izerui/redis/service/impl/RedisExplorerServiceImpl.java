@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.izerui.redis.RedisConfig;
 import com.izerui.redis.command.JedisExecutor;
 import com.izerui.redis.command.hash.AddHash;
 import com.izerui.redis.command.hash.ReadHash;
@@ -42,18 +43,22 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
 
     @Autowired
     ServerConfigRepository serverConfigRepository;
-    @Value("${default.locale}")
-    String language;
+    @Autowired
+    RedisConfig redisConfig;
 
     @Override
     public String getLanguage() {
-        return language;
+        return redisConfig.getLocale();
+    }
+
+    @Override
+    public boolean login(String username,String password) {
+        return username.equals(redisConfig.getUsername())&&password.equals(redisConfig.getPassword());
     }
 
     @Override
     public List<RedisServerConfig> getServerConfigs() {
         return serverConfigRepository.findAll(new Sort(new Sort.Order("createTime")));
-
     }
 
     @Override

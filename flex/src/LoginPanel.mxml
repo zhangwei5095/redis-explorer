@@ -1,16 +1,36 @@
 <?xml version="1.0"?>
 
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns:s="library://ns.adobe.com/flex/spark"
-		  width="330" height="196" title="登陆">
-	<s:layout>
-		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" />
-	</s:layout>
-	
+		  width="330" height="196" title="登陆" isPopUp="true" verticalAlign="middle" horizontalAlign="center">
+
+	<fx:Script><![CDATA[
+		import com.adobe.cairngorm.control.CairngormEventDispatcher;
+		import com.izerui.event.LoginEvent;
+
+		import mx.managers.PopUpManager;
+		import mx.validators.Validator;
+
+		private function button1_clickHandler(event:MouseEvent):void{
+			var validates:Array = Validator.validateAll([usernameValidator, passwordValidator]);
+			if (validates.length != 0) {
+				return;
+			}
+			CairngormEventDispatcher.getInstance().dispatchEvent(new LoginEvent(username.text,password.text,function(data:Boolean):void{
+				if(data){
+					PopUpManager.removePopUp(this);
+				}else{
+					//TODO 左右抖动
+				}
+			}));
+		}
+		]]>
+	</fx:Script>
+
 	<fx:Declarations>
-		<mx:StringValidator source="{username}" required="true" property="text" />
-		<mx:StringValidator source="{password}" required="true" property="text"/>
+		<mx:StringValidator id="usernameValidator" source="{username}" required="true" property="text" />
+		<mx:StringValidator id="passwordValidator" source="{password}" required="true" property="text"/>
 	</fx:Declarations>
 	
 	<mx:Form verticalGap="16">
@@ -22,9 +42,9 @@
 		</mx:FormItem>
 		
 	</mx:Form>
-    <s:controlBarContent>
+    <mx:ControlBar>
 		<s:HGroup width="100%" horizontalAlign="right">
-			<s:Button label="登陆" />
+			<mx:Button label="登陆" click="button1_clickHandler(event)"/>
 		</s:HGroup>
-	</s:controlBarContent>
-</s:Panel>
+	</mx:ControlBar>
+</mx:Panel>

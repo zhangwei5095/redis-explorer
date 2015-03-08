@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public interface RedisExplorerService{
     String getLanguage();
+    boolean login(String username,String password);
     List<RedisServerConfig> getServerConfigs();
     RedisServerConfig saveServerConfig(RedisServerConfig redisServerConfig);
     void removeServerConfig(RedisServerConfig redisServerConfig);

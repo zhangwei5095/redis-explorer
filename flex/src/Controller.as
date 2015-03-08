@@ -12,6 +12,7 @@ import com.izerui.commond.GetSetValueCommond;
 import com.izerui.commond.GetStringValueCommond;
 import com.izerui.commond.GetTTLsCommond;
 import com.izerui.commond.GetZSetValueCommond;
+import com.izerui.commond.LoginCommond;
 import com.izerui.commond.RemoveServerConfigCommond;
 import com.izerui.commond.SaveHashValueCommond;
 import com.izerui.commond.SaveServerConfigCommond;
@@ -44,6 +45,7 @@ public class Controller extends FrontController {
         this.addCommand("setSetValue", SetSetValueCommond);
         this.addCommand("setZSetValue", SetZSetValueCommond);
         this.addCommand("getLanguage", GetLanguageCommond);
+        this.addCommand("login", LoginCommond);
     }
 
     public function Controller() {

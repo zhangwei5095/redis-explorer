@@ -206,7 +206,7 @@
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetLanguageEvent(function(data:String):void{
                 language(data);
             }));
-//			PopUtils.popUp(new LoginPanel(),true);
+			PopUtils.popUp(new LoginPanel(),true);
         }
         ]]>
 	</fx:Script>
