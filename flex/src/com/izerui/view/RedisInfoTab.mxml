@@ -63,6 +63,9 @@
 
 
         private function refrashTTLs():void {
+            if(!key.name){
+                return;
+            }
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetTTLsEvent(FlexGlobals.topLevelApplication.server, key.name,
                     function (data:Number):void {
                         ttlsTime.value = data;

@@ -15,8 +15,11 @@ public class UpdateString extends AddString{
     public void command(Jedis jedis) {
         //先记录下超时时间
         int seconds = (int)getTtl(jedis);
-        //删除key
-        deleteKey(jedis);
+
+        if(seconds!=-2){
+            //删除key
+            deleteKey(jedis);
+        }
 
         //添加
         super.command(jedis);

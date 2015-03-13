@@ -33,20 +33,14 @@
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
         import com.izerui.event.GetKeysEvent;
         import com.izerui.event.GetLanguageEvent;
-        import com.izerui.event.RemoveServerConfigEvent;
-        import com.izerui.support.AlertUtils;
         import com.izerui.support.PopUtils;
         import com.izerui.support.event.DbItemSelectEvent;
-        import com.izerui.support.event.RedisServerUpdateEvent;
         import com.izerui.view.AboutUS;
-        import com.izerui.view.ServerConfigDialog;
         import com.izerui.vo.RedisServerConfig;
-        
+
         import mx.collections.ArrayCollection;
-        import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
         import mx.events.MenuEvent;
-        import mx.utils.ObjectUtil;
 
         [Bindable]
         public var server:RedisServerConfig;
@@ -62,6 +56,13 @@
 
         [Embed("/images/help.png")]
         public const helpImg:Class;
+
+        public function isSelectDB():Boolean{
+            if(this.server&&this.server.dbIndex>-1){
+                return true;
+            }
+            return false;
+        }
 
         private function redisTree1_dbItemSelectEventHandler(event:DbItemSelectEvent):void {
             server = event.selItem;
@@ -79,30 +80,17 @@
                     break;
                 case "addServer":
                 {
-                    openServerConfigDialog("add", redisServerUpdateListener);
+                    redisTree.openServerConfigDialog("add");
                     break;
                 }
                 case "editServer":
                 {
-                    if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
-                        return;
-                    }
-                    openServerConfigDialog("edit", redisServerUpdateListener, RedisServerConfig(ObjectUtil.clone(redisTree.selectedItem)));
+                    redisTree.openServerConfigDialog("edit");
                     break;
                 }
                 case "removeServer":
                 {
-                    if (redisTree.selectedIndex == -1 || redisTree.selectedItem.dbIndex != -1) {
-                        return;
-                    }
-                    AlertUtils.confirm(resourceManager.getString('redis', 'confirmDelete'), resourceManager.getString('redis', 'delete'), FlexGlobals.topLevelApplication, function ():void {
-
-                        CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(redisTree.selectedItem), function ():void {
-                            redisTree.loadTreeData();
-                        }));
-
-                    });
-
+                    redisTree.removeServer();
                     break;
                 }
                 case "english":
@@ -114,24 +102,12 @@
 
                 default:
                 {
+                    mainGrid.operateData(event.item.data);
                     break;
                 }
             }
         }
 
-        private function openServerConfigDialog(sateName:String, listener:Function, item:RedisServerConfig = null):void {
-            var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
-            if (item) {
-                serverConfigDialog.item = item;
-            }
-            serverConfigDialog.currentState = sateName;
-            serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, listener);
-            PopUtils.popUp(serverConfigDialog);
-        }
-
-        protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
-            redisTree.loadTreeData();
-        }
 
         [Bindable]
         private function get menuBarData():ArrayCollection {
@@ -203,10 +179,10 @@
         }
 
         private function creationCompleteHandler(event:FlexEvent):void {
-            CairngormEventDispatcher.getInstance().dispatchEvent(new GetLanguageEvent(function(data:String):void{
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetLanguageEvent(function (data:String):void {
                 language(data);
             }));
-			PopUtils.popUp(new LoginPanel(),true);
+            PopUtils.popUp(new LoginPanel(), true);
         }
         ]]>
 	</fx:Script>

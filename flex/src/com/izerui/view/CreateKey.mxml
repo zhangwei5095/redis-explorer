@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" width="322" height="134" title="{resourceManager.getString('redis','add')}{resourceManager.getString('redis','key')}">
+	
+	<fx:Metadata>
+		[Event(name="addKeyEvent", type="com.izerui.support.event.KeyAddEvent")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.control.CairngormEventDispatcher;
+			import com.izerui.event.SaveStringValueEvent;
+			import com.izerui.support.PopUtils;
+			import com.izerui.support.event.KeyAddEvent;
+			import com.izerui.vo.Key;
+			
+			import mx.core.FlexGlobals;
+			
+			public var key:Key;
+			
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				if(keyInput.text){
+					
+					CairngormEventDispatcher.getInstance().dispatchEvent(new SaveStringValueEvent(
+						FlexGlobals.topLevelApplication.server,
+						keyInput.text,
+						null,
+						function():void{
+							dispatchEvent(new KeyAddEvent());
+						}
+					));
+					
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Form width="100%" height="100%" >
+		<mx:FormItem label="{resourceManager.getString('redis','key')}">
+			<s:TextInput id="keyInput" width="200"/>
+		</mx:FormItem>
+		
+	</mx:Form>
+	<mx:ControlBar>
+		<s:HGroup horizontalAlign="right" width="100%">
+			<s:Button label="{resourceManager.getString('redis','apply')}" icon="@Embed('/images/accept.png')"
+					  click="button2_clickHandler(event)">
+				
+			</s:Button>
+			<s:Button label="{resourceManager.getString('redis','cancel')}" icon="@Embed('/images/redo.png')"
+					  click="PopUtils.removeUp(this);">
+				
+			</s:Button>
+		</s:HGroup>
+	</mx:ControlBar>
+</mx:Panel>
