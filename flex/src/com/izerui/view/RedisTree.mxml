@@ -17,12 +17,18 @@
         import com.adobe.cairngorm.control.CairngormEventDispatcher;
         import com.izerui.event.GetDbAmountEvent;
         import com.izerui.event.GetServerConfigsEvent;
+        import com.izerui.event.RemoveServerConfigEvent;
+        import com.izerui.support.AlertUtils;
+        import com.izerui.support.PopUtils;
         import com.izerui.support.event.DbItemSelectEvent;
+        import com.izerui.support.event.RedisServerUpdateEvent;
         import com.izerui.support.event.TreeItemClickEvent;
         import com.izerui.vo.RedisServerConfig;
 
         import mx.collections.ArrayCollection;
+        import mx.core.FlexGlobals;
         import mx.events.FlexEvent;
+        import mx.utils.ObjectUtil;
 
         public function loadTreeData():void {
             CairngormEventDispatcher.getInstance().dispatchEvent(new GetServerConfigsEvent(function (data:ArrayCollection):void {
@@ -64,6 +70,41 @@
                 this.dispatchEvent(new DbItemSelectEvent(selItem))
             }
 
+        }
+
+
+        public function openServerConfigDialog(stateName:String):void {
+            var item:RedisServerConfig = new RedisServerConfig();
+            if (stateName == "edit") {
+                if (selectedIndex == -1 || selectedItem.dbIndex != -1) {
+                    return;
+                }
+                item = RedisServerConfig(ObjectUtil.clone(selectedItem));
+            }
+
+            var serverConfigDialog:ServerConfigDialog = new ServerConfigDialog();
+            serverConfigDialog.item = item;
+            serverConfigDialog.currentState = stateName;
+            serverConfigDialog.addEventListener(RedisServerUpdateEvent.redisServerUpdateEvent, redisServerUpdateListener);
+            PopUtils.popUp(serverConfigDialog);
+        }
+
+        protected function redisServerUpdateListener(event:RedisServerUpdateEvent):void {
+            loadTreeData();
+        }
+
+        public function removeServer():void {
+
+            if (selectedIndex == -1 || selectedItem.dbIndex != -1) {
+                return;
+            }
+            AlertUtils.confirm(resourceManager.getString('redis', 'confirmDelete'), resourceManager.getString('redis', 'delete'), FlexGlobals.topLevelApplication, function ():void {
+
+                CairngormEventDispatcher.getInstance().dispatchEvent(new RemoveServerConfigEvent(RedisServerConfig(selectedItem), function ():void {
+                    loadTreeData();
+                }));
+
+            });
         }
         ]]>
     </fx:Script>

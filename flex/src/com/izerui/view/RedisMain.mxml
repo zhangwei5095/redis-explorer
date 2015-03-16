@@ -1,74 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VDividedBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:view="com.izerui.view.*" currentState="listState">
-	<fx:Declarations>
-		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
-	</fx:Declarations>
-	
-	<mx:states>
-		<s:State name="listState"/>
-		<s:State name="infoState"/>
-	</mx:states>
-	
-	<fx:Script>
+<mx:VDividedBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:view="com.izerui.view.*"
+                currentState="listState">
+    <fx:Declarations>
+        <!-- 将非可视元素（例如服务、值对象）放在此处 -->
+    </fx:Declarations>
+
+    <mx:states>
+        <s:State name="listState"/>
+        <s:State name="infoState"/>
+    </mx:states>
+
+    <fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.control.CairngormEventDispatcher;
 			import com.izerui.event.GetKeyEvent;
+			import com.izerui.support.PopUtils;
+			import com.izerui.support.event.KeyAddEvent;
 			import com.izerui.support.event.KeyDataChangeEvent;
 			import com.izerui.vo.Key;
+			
+			import flash.globalization.StringTools;
 			
 			import mx.collections.ArrayCollection;
 			import mx.core.FlexGlobals;
 			import mx.events.ListEvent;
-			
-			private var _keyList:Object;
-			
-			[Bindable]
-			public function get keyList():Object
-			{
-				return _keyList;
-			}
 
-			public function set keyList(value:Object):void
-			{
-				_keyList = value;
-			}
-			
-			
+        private var _keyList:Object;
 
-			protected function gridList_itemClickHandler(event:ListEvent):void
-			{
-                if(gridList.selectedIndex==-1){
-                    return;
-                }
-				this.currentState = "infoState";
-				var key:Key = Key(gridList.selectedItem);
-				key.rowIndex = gridList.selectedIndex;
-				tabInfo.key = key;
-				tabInfo.label = key.name;
-                tabInfo.selectedIndex = 0;
-			}
-			
-			protected function tabInfo_keyDataChangeEventHandler(event:KeyDataChangeEvent):void
-			{
-				CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeyEvent(
-					FlexGlobals.topLevelApplication.server,
-					event.key.name,
-					function(data:Key):void{
-						ArrayCollection(gridList.dataProvider).setItemAt(data,event.key.rowIndex);
-						ArrayCollection(gridList.dataProvider).itemUpdated(data);
-					}
-				));
-			}
-			
-		]]>
+        [Bindable]
+        public function get keyList():Object {
+            return _keyList;
+        }
+
+        public function set keyList(value:Object):void {
+            _keyList = value;
+        }
+
+
+        protected function gridList_itemClickHandler(event:ListEvent):void {
+            if (gridList.selectedIndex == -1) {
+                return;
+            }
+            this.currentState = "infoState";
+            var key:Key = Key(gridList.selectedItem);
+            key.rowIndex = gridList.selectedIndex;
+            tabInfo.key = key;
+            tabInfo.label = key.name;
+            tabInfo.selectedIndex = 0;
+        }
+
+        protected function tabInfo_keyDataChangeEventHandler(event:KeyDataChangeEvent):void {
+            CairngormEventDispatcher.getInstance().dispatchEvent(new GetKeyEvent(
+                    FlexGlobals.topLevelApplication.server,
+                    event.key.name,
+                    function (data:Key):void {
+                        ArrayCollection(gridList.dataProvider).setItemAt(data, event.key.rowIndex);
+                        ArrayCollection(gridList.dataProvider).itemUpdated(data);
+                    }
+            ));
+        }
+
+        public function operateData(data:String):void {
+            if(!FlexGlobals.topLevelApplication.isSelectDB()){
+                return;
+            }
+            switch (data) {
+                case "createString":
+					var key:Key = new Key();
+					key.type = "string";
+					var createKey:CreateKey = new CreateKey();
+					createKey.key = key;
+					createKey.addEventListener(KeyAddEvent.addKeyEvent,function(event:KeyAddEvent):void{
+						var dataList:ArrayCollection = (gridList.dataProvider as ArrayCollection);
+                        //TODO 验证是否存在
+						dataList.addItem(event.key);
+						gridList.selectedIndex = dataList.length;
+						gridList.scrollToIndex(dataList.length);
+						gridList.dispatchEvent(new ListEvent(ListEvent.ITEM_CLICK));
+					});
+					PopUtils.popUp(createKey,true);
+                    break;
+                default :
+                    break;
+            }
+        }
+        ]]>
 	</fx:Script>
-	
-	<view:RedisGridList id="gridList" width="100%" height="55%" dataProvider="@{keyList}" itemClick="gridList_itemClickHandler(event)"/>
-	
-	<view:RedisInfoTab id="tabInfo" width="100%" height="45%" minHeight="300" includeIn="infoState" keyDataChangeEvent="tabInfo_keyDataChangeEventHandler(event)">
-		
-	</view:RedisInfoTab>
-	
+
+    <view:RedisGridList id="gridList" width="100%" height="55%" dataProvider="@{keyList}"
+                        itemClick="gridList_itemClickHandler(event)"/>
+
+    <view:RedisInfoTab id="tabInfo" width="100%" height="45%" minHeight="300" includeIn="infoState"
+                       keyDataChangeEvent="tabInfo_keyDataChangeEventHandler(event)">
+
+    </view:RedisInfoTab>
+
 </mx:VDividedBox>
