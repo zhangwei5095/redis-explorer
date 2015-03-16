@@ -27,7 +27,7 @@
 					CairngormEventDispatcher.getInstance().dispatchEvent(new SaveStringValueEvent(
 						FlexGlobals.topLevelApplication.server,
 						keyInput.text,
-						null,
+						"",
 						function():void{
 							dispatchEvent(new KeyAddEvent());
 						}
