@@ -161,7 +161,7 @@
                     {"label": resourceManager.getString("redis", "delete"), "data": "deleteKey"},
                     {"label": resourceManager.getString("redis", "attr"), "data": "attr"},
                     {"type": "separator"},
-                    {"label": resourceManager.getString("redis", "cut"), "data": "cut"},
+                    {"label": resourceManager.getString("redis", "move"), "data": "move"},
                     {"label": resourceManager.getString("redis", "copy"), "data": "copy"},
                     {"label": resourceManager.getString("redis", "paste"), "data": "paste"},
                     {"type": "separator"},
