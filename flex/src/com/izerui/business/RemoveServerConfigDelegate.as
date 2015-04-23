@@ -7,7 +7,7 @@ import mx.rpc.AsyncToken;
 	import mx.rpc.IResponder;
 	import mx.rpc.remoting.RemoteObject;
 	
-	public class RemoveServerConfigDelegate implements IResponder
+	public class RemoveServerConfigDelegate extends BaseDelegate implements IResponder
 	{
 		private var responder:IResponder;
 		private var service:RemoteObject;
@@ -15,7 +15,7 @@ import mx.rpc.AsyncToken;
 		public function RemoveServerConfigDelegate(responder:IResponder)
 		{
 			this.responder = responder;
-			this.service = ServiceLocator.getInstance().getRemoteObject("redisExplorerService");
+			this.service = getRemoteObject("redisExplorerService");
 		}
 		
 		public function removeServerConfig(server:RedisServerConfig):void{

@@ -7,7 +7,7 @@ package com.izerui.business
 	import mx.rpc.IResponder;
 	import mx.rpc.remoting.RemoteObject;
 	
-	public class SaveServerConfigDelegate implements IResponder
+	public class SaveServerConfigDelegate extends BaseDelegate implements IResponder
 	{
 		private var responder:IResponder;
 		private var service:RemoteObject;
@@ -15,7 +15,7 @@ package com.izerui.business
 		public function SaveServerConfigDelegate(responder:IResponder)
 		{
 			this.responder = responder;
-			this.service = ServiceLocator.getInstance().getRemoteObject("redisExplorerService");
+			this.service = getRemoteObject("redisExplorerService");
 		}
 		
 		public function saveServerConfig(server:RedisServerConfig):void{

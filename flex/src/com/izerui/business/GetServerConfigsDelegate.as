@@ -5,7 +5,7 @@ package com.izerui.business
 	import mx.rpc.IResponder;
 	import mx.rpc.remoting.RemoteObject;
 	
-	public class GetServerConfigsDelegate implements IResponder
+	public class GetServerConfigsDelegate extends BaseDelegate implements IResponder
 	{
 		private var responder:IResponder;
 		private var service:RemoteObject;
@@ -13,7 +13,7 @@ package com.izerui.business
 		public function GetServerConfigsDelegate(responder:IResponder)
 		{
 			this.responder = responder;
-			this.service = ServiceLocator.getInstance().getRemoteObject("redisExplorerService");
+			this.service = getRemoteObject("redisExplorerService");
 		}
 		
 		public function getServerConfigs():void{

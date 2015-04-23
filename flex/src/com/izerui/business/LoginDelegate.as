@@ -6,7 +6,7 @@ package com.izerui.business
 	import mx.rpc.remoting.RemoteObject;
 	import com.izerui.vo.RedisServerConfig;
 	
-	public class LoginDelegate implements IResponder
+	public class LoginDelegate extends BaseDelegate implements IResponder
 	{
 		private var responder:IResponder;
 		private var service:RemoteObject;
@@ -14,7 +14,7 @@ package com.izerui.business
 		public function LoginDelegate(responder:IResponder)
 		{
 			this.responder = responder;
-			this.service = ServiceLocator.getInstance().getRemoteObject("redisExplorerService");
+			this.service = getRemoteObject("redisExplorerService");
 		}
 		
 		public function login(username:String,password:String):void{

@@ -184,6 +184,16 @@
             }));
             PopUtils.popUp(new LoginPanel(), true);
         }
+
+        [Bindable]
+        public function get endpoint():String{
+            var url:String = this.url;
+            url = url.substring(0,url.lastIndexOf("/"));
+            trace(url);
+            url += "/messagebroker/amf";
+            return url;
+        }
+
         ]]>
 	</fx:Script>
 
