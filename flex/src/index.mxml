@@ -135,6 +135,7 @@
                     },
                     {"label": resourceManager.getString("redis", "rename"), "data": "rename"},
                     {"label": resourceManager.getString("redis", "delete"), "data": "deleteKey"},
+                    {"label": resourceManager.getString("redis", "search"), "data": "search"},
 //                        TODO continue
 //                    {"label": resourceManager.getString("redis", "attr"), "data": "attr"},
 //                    {"type": "separator"},

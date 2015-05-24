@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+  Created by Administrator on 2015/5/24.
+-->
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="424" height="82" dropShadowVisible="true" fontSize="16"
+		  keyDown="keyDownHandler1(event)" mouseDownOutside="close();"
+          title="{resourceManager.getString('redis','searchTitle')}"
+          layout="horizontal"
+          paddingBottom="1"
+		  paddingLeft="1" paddingRight="1" paddingTop="1">
+
+  <fx:Metadata>
+    [Event(name="searchKeyEvent", type="com.izerui.support.event.SearchKeyEvent")]
+  </fx:Metadata>
+
+  <mx:TextInput id="searchInput" width="100%" height="100%" change="searchKey_changeHandler(event)"
+				fontSize="24"
+              text="@{searchKey}" creationComplete="searchInput.setFocus();"/>
+
+  <fx:Script><![CDATA[
+    import com.izerui.support.event.SearchKeyEvent;
+    import com.izerui.vo.Key;
+
+    import mx.collections.ArrayCollection;
+    import mx.managers.PopUpManager;
+
+    public var dataList:ArrayCollection;
+    [Bindable]
+    public var searchKey:String;
+
+
+    private function close():void {
+      PopUpManager.removePopUp(this);
+    }
+
+    private function keyDownHandler1(event:KeyboardEvent):void {
+      if (event.keyCode == Keyboard.ENTER) {
+        close();
+      }
+    }
+
+    private function searchKey_changeHandler(event:Event):void {
+      var newDataList:ArrayCollection = new ArrayCollection();
+      var array:Array = searchKey.split(" ");
+      for each(var key:Key in dataList) {
+
+        for each(var sk:String in array){
+          if (key.name.indexOf(sk)>-1) {
+            newDataList.addItem(key);
+          }
+        }
+
+      }
+      var searchKeyEvent:SearchKeyEvent = new SearchKeyEvent();
+      searchKeyEvent.filterData = newDataList;
+      searchKeyEvent.searchKey = searchKey;
+      dispatchEvent(searchKeyEvent);
+    }
+    ]]>
+  </fx:Script>
+</mx:Panel>

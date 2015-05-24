@@ -23,13 +23,20 @@
         import com.izerui.support.event.KeyAddEvent;
         import com.izerui.support.event.KeyDataChangeEvent;
         import com.izerui.support.event.KeyRenameEvent;
+        import com.izerui.support.event.SearchKeyEvent;
         import com.izerui.vo.Key;
 
         import mx.collections.ArrayCollection;
         import mx.core.FlexGlobals;
         import mx.events.ListEvent;
+        import mx.utils.ObjectUtil;
 
         private var _keyList:Object;
+
+        //检索的关键字
+        private var searchKey:String;
+        //检索之前的所有数据
+        private var beforeSearchData:ArrayCollection;
 
         [Bindable]
         public function get keyList():Object {
@@ -68,9 +75,6 @@
             if (!FlexGlobals.topLevelApplication.isSelectDB()) {
                 return;
             }
-            if (gridList.selectedItem == null) {
-                return;
-            }
             switch (data) {
                 case "createString":
                     createKey("string");
@@ -88,6 +92,9 @@
                     createKey("set");
                     break;
                 case "rename":
+                    if (gridList.selectedItem == null) {
+                        return;
+                    }
                     var selKey:Key = gridList.selectedItem as Key;
                     var renameKeyPanel:RenameKey = new RenameKey();
                     renameKeyPanel.key = selKey;
@@ -99,6 +106,9 @@
                     PopUtils.popUp(renameKeyPanel, true);
                     break;
                 case "deleteKey":
+                    if (gridList.selectedItem == null) {
+                        return;
+                    }
                     var selKey:Key = gridList.selectedItem as Key;
                     AlertUtils.confirm(resourceManager.getString("redis", "confirmDelete"),
                             resourceManager.getString("redis", "delete"),
@@ -111,6 +121,19 @@
                                 )
                             }
                     );
+                    break;
+                case "search":
+                        if(!beforeSearchData){
+                            beforeSearchData = ObjectUtil.clone(gridList.dataProvider) as ArrayCollection;
+                        }
+                        var panel:SearchPanel = new SearchPanel();
+                        panel.dataList = beforeSearchData;
+                        panel.searchKey = searchKey;
+                        panel.addEventListener(SearchKeyEvent.searchKeyEvent, function(event:SearchKeyEvent):void{
+                               gridList.dataProvider = event.filterData;
+                               searchKey = event.searchKey;
+                        });
+                        PopUtils.popUp(panel, false);
                     break;
                 default :
                     break;
@@ -137,6 +160,10 @@
         private function keyDownHandler1(event:KeyboardEvent):void {
             if(event.keyCode == Keyboard.DELETE){
                 operateData("deleteKey");
+            }
+
+            if(event.ctrlKey&&event.keyCode == Keyboard.F){
+                operateData("search");
             }
         }
         ]]>
