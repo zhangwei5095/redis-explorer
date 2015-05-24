@@ -2,23 +2,19 @@
 <mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx" width="322" height="134"
-		  title="{resourceManager.getString('redis','add')}{resourceManager.getString('redis','key')}"
+		  title="{resourceManager.getString('redis','edit')}{resourceManager.getString('redis','key')}"
 		creationComplete="creationCompleteHandler(event)">
 	
 	<fx:Metadata>
-		[Event(name="addKeyEvent", type="com.izerui.support.event.KeyAddEvent")]
+		[Event(name="renameKeyEvent", type="com.izerui.support.event.KeyRenameEvent")]
 	</fx:Metadata>
 	
 	<fx:Script>
 		<![CDATA[
 		import com.adobe.cairngorm.control.CairngormEventDispatcher;
-		import com.izerui.event.SaveHashValueEvent;
-		import com.izerui.event.SaveStringValueEvent;
-		import com.izerui.event.SetListValueEvent;
-		import com.izerui.event.SetSetValueEvent;
-		import com.izerui.event.SetZSetValueEvent;
+		import com.izerui.event.RenameEvent;
 		import com.izerui.support.PopUtils;
-		import com.izerui.support.event.KeyAddEvent;
+		import com.izerui.support.event.KeyRenameEvent;
 		import com.izerui.vo.Key;
 
 		import mx.collections.ArrayCollection;
@@ -27,7 +23,6 @@
 		import mx.events.FlexEvent;
 		import mx.managers.PopUpManager;
 
-		[Bindable]
 		public var key:Key;
 
 		public var dataList:ArrayCollection;
@@ -37,61 +32,26 @@
 			if (keyInput.text) {
 
 				for each(var keyItem:Key in dataList) {
-					if (keyItem.name == key.name) {
+					if (keyItem.name == keyInput.text) {
 						Alert.show(resourceManager.getString("redis", "existKey"),
 								resourceManager.getString("redis", "prompt"));
 						return;
 					}
 				}
 
-				switch (key.type) {
-					case "string":
-						CairngormEventDispatcher.getInstance().dispatchEvent(new SaveStringValueEvent(
-								FlexGlobals.topLevelApplication.server,
-								keyInput.text,
-								"",
-								dispachKeyEvent
-						));
-						break;
-					case "list":
-						CairngormEventDispatcher.getInstance().dispatchEvent(new SetListValueEvent(
-								FlexGlobals.topLevelApplication.server,
-								keyInput.text,
-								[{"label": ""}],
-								dispachKeyEvent
-						));
-						break;
-					case "hash":
-						CairngormEventDispatcher.getInstance().dispatchEvent(new SaveHashValueEvent(
-								FlexGlobals.topLevelApplication.server,
-								keyInput.text,
-								[{"key": "", "value": ""}],
-								dispachKeyEvent
-						));
-						break;
-					case "set":
-						CairngormEventDispatcher.getInstance().dispatchEvent(new SetSetValueEvent(
-								FlexGlobals.topLevelApplication.server,
-								keyInput.text,
-								[{"label": ""}],
-								dispachKeyEvent
-						));
-						break;
-					case "zset":
-						CairngormEventDispatcher.getInstance().dispatchEvent(new SetZSetValueEvent(
-								FlexGlobals.topLevelApplication.server,
-								keyInput.text,
-								[{"score": 0, "element": ""}],
-								dispachKeyEvent
-						));
-						break;
-				}
+				CairngormEventDispatcher.getInstance().dispatchEvent(new RenameEvent(
+						FlexGlobals.topLevelApplication.server,
+						key.name,
+						keyInput.text,
+						dispachKeyEvent
+				));
 
 			}
 
 
 			function dispachKeyEvent():void {
-				var keyEvent:KeyAddEvent = new KeyAddEvent();
+				var keyEvent:KeyRenameEvent = new KeyRenameEvent();
+				key.name = keyInput.text;
 				keyEvent.key = key;
 				dispatchEvent(keyEvent);
 				close();
@@ -114,7 +74,7 @@
 	</fx:Declarations>
 	<mx:Form width="100%" height="100%" >
 		<mx:FormItem label="{resourceManager.getString('redis','key')}">
-			<s:TextInput id="keyInput" width="200" text="@{key.name}"/>
+			<s:TextInput id="keyInput" width="200" text="{key.name}"/>
 		</mx:FormItem>
 		
 	</mx:Form>

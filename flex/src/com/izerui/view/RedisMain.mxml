@@ -2,7 +2,8 @@
 <mx:VDividedBox xmlns:fx="http://ns.adobe.com/mxml/2009"
                 xmlns:s="library://ns.adobe.com/flex/spark"
                 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" xmlns:view="com.izerui.view.*"
-                currentState="listState">
+                currentState="listState"
+        keyDown="keyDownHandler1(event)">
     <fx:Declarations>
         <!-- 将非可视元素（例如服务、值对象）放在此处 -->
     </fx:Declarations>
@@ -14,18 +15,19 @@
 
     <fx:Script>
 		<![CDATA[
-			import com.adobe.cairngorm.control.CairngormEventDispatcher;
-			import com.izerui.event.GetKeyEvent;
-			import com.izerui.support.PopUtils;
-			import com.izerui.support.event.KeyAddEvent;
-			import com.izerui.support.event.KeyDataChangeEvent;
-			import com.izerui.vo.Key;
-			
-			import flash.globalization.StringTools;
-			
-			import mx.collections.ArrayCollection;
-			import mx.core.FlexGlobals;
-			import mx.events.ListEvent;
+        import com.adobe.cairngorm.control.CairngormEventDispatcher;
+        import com.izerui.event.DeleteKeyEvent;
+        import com.izerui.event.GetKeyEvent;
+        import com.izerui.support.AlertUtils;
+        import com.izerui.support.PopUtils;
+        import com.izerui.support.event.KeyAddEvent;
+        import com.izerui.support.event.KeyDataChangeEvent;
+        import com.izerui.support.event.KeyRenameEvent;
+        import com.izerui.vo.Key;
+
+        import mx.collections.ArrayCollection;
+        import mx.core.FlexGlobals;
+        import mx.events.ListEvent;
 
         private var _keyList:Object;
 
@@ -63,27 +65,78 @@
         }
 
         public function operateData(data:String):void {
-            if(!FlexGlobals.topLevelApplication.isSelectDB()){
+            if (!FlexGlobals.topLevelApplication.isSelectDB()) {
+                return;
+            }
+            if (gridList.selectedItem == null) {
                 return;
             }
             switch (data) {
                 case "createString":
-					var key:Key = new Key();
-					key.type = "string";
-					var createKey:CreateKey = new CreateKey();
-					createKey.key = key;
-					createKey.addEventListener(KeyAddEvent.addKeyEvent,function(event:KeyAddEvent):void{
-						var dataList:ArrayCollection = (gridList.dataProvider as ArrayCollection);
-                        //TODO 验证是否存在
-						dataList.addItem(event.key);
-						gridList.selectedIndex = dataList.length;
-						gridList.scrollToIndex(dataList.length);
-						gridList.dispatchEvent(new ListEvent(ListEvent.ITEM_CLICK));
-					});
-					PopUtils.popUp(createKey,true);
+                    createKey("string");
+                    break;
+                case "createList":
+                    createKey("list");
+                    break;
+                case "createHash":
+                    createKey("hash");
+                    break;
+                case "createZSet":
+                    createKey("zset");
+                    break;
+                case "createSet":
+                    createKey("set");
+                    break;
+                case "rename":
+                    var selKey:Key = gridList.selectedItem as Key;
+                    var renameKeyPanel:RenameKey = new RenameKey();
+                    renameKeyPanel.key = selKey;
+                    renameKeyPanel.addEventListener(KeyRenameEvent.renameKeyEvent, function (event:KeyRenameEvent):void {
+                        var dataList:ArrayCollection = (gridList.dataProvider as ArrayCollection);
+                        gridList.selectedItem = event.key;
+                        dataList.itemUpdated(gridList.selectedItem);
+                    });
+                    PopUtils.popUp(renameKeyPanel, true);
+                    break;
+                case "deleteKey":
+                    var selKey:Key = gridList.selectedItem as Key;
+                    AlertUtils.confirm(resourceManager.getString("redis", "confirmDelete"),
+                            resourceManager.getString("redis", "delete"),
+                            FlexGlobals.topLevelApplication,
+                            function ():void {
+                                CairngormEventDispatcher.getInstance().dispatchEvent(
+                                        new DeleteKeyEvent(FlexGlobals.topLevelApplication.server, selKey.name, function ():void {
+                                            (gridList.dataProvider as ArrayCollection).removeItemAt(gridList.selectedIndex);
+                                        })
+                                )
+                            }
+                    );
                     break;
                 default :
                     break;
+            }
+
+
+            function createKey(type:String):void {
+                var key:Key = new Key();
+                key.type = type;
+                var createKey:CreateKey = new CreateKey();
+                createKey.key = key;
+                createKey.dataList = (gridList.dataProvider as ArrayCollection);
+                createKey.addEventListener(KeyAddEvent.addKeyEvent, function (event:KeyAddEvent):void {
+                    var dataList:ArrayCollection = (gridList.dataProvider as ArrayCollection);
+                    dataList.addItem(event.key);
+                    gridList.selectedIndex = dataList.length;
+                    gridList.scrollToIndex(dataList.length);
+                    gridList.dispatchEvent(new ListEvent(ListEvent.ITEM_CLICK));
+                });
+                PopUtils.popUp(createKey, true);
+            }
+        }
+
+        private function keyDownHandler1(event:KeyboardEvent):void {
+            if(event.keyCode == Keyboard.DELETE){
+                operateData("deleteKey");
             }
         }
         ]]>

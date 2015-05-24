@@ -1,7 +1,7 @@
 package com.izerui.redis.service;
 
 import com.izerui.redis.dto.Key;
-import com.izerui.redis.entity.RedisServerConfig;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -32,4 +32,6 @@ public interface RedisExplorerService{
     Long getIdletime(RedisServerConfig redisServerConfig, String key);
     Long getTTLs(RedisServerConfig redisServerConfig, String key);
     void setExpire(RedisServerConfig redisServerConfig, String key,int expire);
+    void rename(RedisServerConfig redisServerConfig, String key , String newKey);
+    void deleteKey(RedisServerConfig redisServerConfig, String key);
 }

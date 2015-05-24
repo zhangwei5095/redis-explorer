@@ -1,6 +1,6 @@
-package com.izerui.redis.repository;
+package com.izerui.redis.jpa.repository;
 
-import com.izerui.redis.entity.RedisServerConfig;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

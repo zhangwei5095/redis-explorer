@@ -1,12 +1,10 @@
-import com.izerui.redis.command.JedisExecutor;
 import com.izerui.redis.command.key.Encoding;
 import com.izerui.redis.command.key.ListKeys;
 import com.izerui.redis.command.key.Size;
 import com.izerui.redis.command.key.TTLs;
 import com.izerui.redis.command.server.DbAmount;
 import com.izerui.redis.command.server.ServerProperties;
-import com.izerui.redis.entity.RedisServerConfig;
-import org.junit.Before;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
 import org.junit.Test;
 
 /**

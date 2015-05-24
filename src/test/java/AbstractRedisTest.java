@@ -1,8 +1,7 @@
 import com.izerui.redis.command.Command;
 import com.izerui.redis.command.JedisExecutor;
-import com.izerui.redis.entity.RedisServerConfig;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
 import org.junit.Before;
-import redis.clients.jedis.Jedis;
 
 /**
  * Created by serv on 2015/2/8.

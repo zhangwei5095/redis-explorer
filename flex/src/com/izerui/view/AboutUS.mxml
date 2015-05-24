@@ -51,7 +51,7 @@
 	<mx:LinkButton x="262" y="229" icon="@Embed('/images/homepage.png')" label="Home Page!" click="linkbutton2_clickHandler(event)"/>
 	<mx:Form x="118" y="102" width="286" height="90">
 		<mx:FormItem label="Developed by :">
-			<mx:Label text="泽睿的自言自语"/>
+			<mx:Label text="{resourceManager.getString('redis','aboutMe')}"/>
 		</mx:FormItem>
 		<mx:FormItem label="Version :">
 			<mx:Label text="1.0"/>

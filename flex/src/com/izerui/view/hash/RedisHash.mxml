@@ -69,7 +69,7 @@
 			protected function button2_clickHandler(event:MouseEvent):void
 			{
 				var dataList:ArrayCollection = (hashGrid.dataProvider as ArrayCollection);
-				dataList.addItem({"key":"null","value":"null"});
+				dataList.addItem({"key":"","value":""});
 				hashGrid.selectedIndex = dataList.length;
 				hashGrid.scrollToIndex(dataList.length);
 			}

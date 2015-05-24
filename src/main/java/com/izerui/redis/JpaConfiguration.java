@@ -1,4 +1,4 @@
-package com.izerui.redis.configuration;
+package com.izerui.redis;
 
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement(proxyTargetClass = true)
-@EnableJpaRepositories(basePackages = "com.izerui.*.repository")
-@EntityScan(basePackages = "com.izerui.*.entity")
+@EnableJpaRepositories(basePackages = "com.izerui.redis.jpa.repository")
+@EntityScan(basePackages = "com.izerui.redis.jpa.entity")
 public class JpaConfiguration {
 }

@@ -1,6 +1,6 @@
 import com.izerui.redis.Application;
-import com.izerui.redis.entity.RedisServerConfig;
-import com.izerui.redis.repository.ServerConfigRepository;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
+import com.izerui.redis.jpa.repository.ServerConfigRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

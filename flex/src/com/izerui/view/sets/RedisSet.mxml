@@ -52,7 +52,7 @@
 
         private function button1_clickHandler(event:MouseEvent):void {
             var dataList:ArrayCollection = (setData.dataProvider as ArrayCollection);
-            dataList.addItem({"label": "null"});
+            dataList.addItem({"label": ""});
             setData.selectedIndex = dataList.length;
             setData.scrollToIndex(setData.selectedIndex);
         }

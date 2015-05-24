@@ -135,14 +135,15 @@
                     },
                     {"label": resourceManager.getString("redis", "rename"), "data": "rename"},
                     {"label": resourceManager.getString("redis", "delete"), "data": "deleteKey"},
-                    {"label": resourceManager.getString("redis", "attr"), "data": "attr"},
-                    {"type": "separator"},
-                    {"label": resourceManager.getString("redis", "cut"), "data": "cut"},
-                    {"label": resourceManager.getString("redis", "copy"), "data": "copy"},
-                    {"label": resourceManager.getString("redis", "paste"), "data": "paste"},
-                    {"type": "separator"},
-                    {"label": resourceManager.getString("redis", "import"), "data": "import"},
-                    {"label": resourceManager.getString("redis", "export"), "data": "export"},
+//                        TODO continue
+//                    {"label": resourceManager.getString("redis", "attr"), "data": "attr"},
+//                    {"type": "separator"},
+//                    {"label": resourceManager.getString("redis", "cut"), "data": "cut"},
+//                    {"label": resourceManager.getString("redis", "copy"), "data": "copy"},
+//                    {"label": resourceManager.getString("redis", "paste"), "data": "paste"},
+//                    {"type": "separator"},
+//                    {"label": resourceManager.getString("redis", "import"), "data": "import"},
+//                    {"label": resourceManager.getString("redis", "export"), "data": "export"},
                 ]
             });
             data.addItem({
@@ -189,7 +190,7 @@
         public function get endpoint():String{
             var url:String = this.url;
             url = url.substring(0,url.lastIndexOf("/"));
-            trace(url);
+//            trace(url);
             url += "/messagebroker/amf";
             return url;
         }

@@ -54,7 +54,7 @@
 
         private function button1_clickHandler(event:MouseEvent):void {
             var dataList:ArrayCollection = (zSetData.dataProvider as ArrayCollection);
-            dataList.addItem({"score": 0, "element": "null"});
+            dataList.addItem({"score": 0, "element": ""});
             zSetData.selectedIndex = dataList.length;
             zSetData.scrollToIndex(zSetData.selectedIndex);
         }

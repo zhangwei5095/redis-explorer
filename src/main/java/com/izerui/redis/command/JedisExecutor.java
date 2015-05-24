@@ -1,6 +1,6 @@
 package com.izerui.redis.command;
 
-import com.izerui.redis.entity.RedisServerConfig;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Protocol;
 

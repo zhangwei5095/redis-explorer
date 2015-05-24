@@ -49,6 +49,9 @@
         }
 
         public function set key(value:Key):void {
+            if(value.type == "none"){
+                return;
+            }
             _key = value;
             this.currentState = value.type;
             synTTLsTime();

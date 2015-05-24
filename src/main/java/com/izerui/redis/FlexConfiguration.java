@@ -1,4 +1,4 @@
-package com.izerui.redis.configuration;
+package com.izerui.redis;
 
 import flex.messaging.HttpFlexSession;
 import flex.messaging.MessageBroker;

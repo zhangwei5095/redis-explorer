@@ -1,5 +1,6 @@
 package {
 import com.adobe.cairngorm.control.FrontController;
+import com.izerui.commond.DeleteKeyCommond;
 import com.izerui.commond.GetDbAmountCommond;
 import com.izerui.commond.GetHashValueCommond;
 import com.izerui.commond.GetIdletimeCommond;
@@ -14,6 +15,7 @@ import com.izerui.commond.GetTTLsCommond;
 import com.izerui.commond.GetZSetValueCommond;
 import com.izerui.commond.LoginCommond;
 import com.izerui.commond.RemoveServerConfigCommond;
+import com.izerui.commond.RenameCommond;
 import com.izerui.commond.SaveHashValueCommond;
 import com.izerui.commond.SaveServerConfigCommond;
 import com.izerui.commond.SaveStringValueCommond;
@@ -46,6 +48,9 @@ public class Controller extends FrontController {
         this.addCommand("setZSetValue", SetZSetValueCommond);
         this.addCommand("getLanguage", GetLanguageCommond);
         this.addCommand("login", LoginCommond);
+        this.addCommand("rename", RenameCommond);
+        this.addCommand("deleteKey", DeleteKeyCommond);
+
     }
 
     public function Controller() {

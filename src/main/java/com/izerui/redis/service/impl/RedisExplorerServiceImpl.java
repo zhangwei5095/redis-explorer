@@ -19,12 +19,11 @@ import com.izerui.redis.command.string.UpdateString;
 import com.izerui.redis.command.zset.AllZSet;
 import com.izerui.redis.command.zset.UpdateZSet;
 import com.izerui.redis.dto.Key;
-import com.izerui.redis.entity.RedisServerConfig;
-import com.izerui.redis.repository.ServerConfigRepository;
+import com.izerui.redis.jpa.entity.RedisServerConfig;
+import com.izerui.redis.jpa.repository.ServerConfigRepository;
 import com.izerui.redis.service.RedisExplorerService;
 import com.izerui.redis.utils.MapListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
@@ -199,5 +198,15 @@ public class RedisExplorerServiceImpl  implements RedisExplorerService {
     @Override
     public void setExpire(RedisServerConfig redisServerConfig, String key, int expire) {
         new JedisExecutor(redisServerConfig).execute(new Expire(key,expire));
+    }
+
+    @Override
+    public void rename(RedisServerConfig redisServerConfig, String key, String newKey) {
+        new JedisExecutor(redisServerConfig).execute(new Rename(key, newKey, false));
+    }
+
+    @Override
+    public void deleteKey(RedisServerConfig redisServerConfig, String key) {
+        new JedisExecutor(redisServerConfig).execute(new Delete(key));
     }
 }

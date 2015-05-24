@@ -1,10 +1,9 @@
-package com.izerui.redis.entity;
+package com.izerui.redis.jpa.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by serv on 2015/2/3.
