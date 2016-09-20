@@ -24,7 +24,7 @@
 			
 			protected function linkbutton2_clickHandler(event:MouseEvent):void
 			{
-				navigateToURL(new URLRequest("http://izerui.com"));
+				navigateToURL(new URLRequest("http://boot.ren"));
 			}
 			
 		]]>
